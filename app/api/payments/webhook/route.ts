@@ -42,5 +42,11 @@ export async function POST(request: Request) {
     console.error("mark_order_paid failed", error.message);
     return NextResponse.json({ ok: false }, { status: 500 }); // 500 makes the provider retry later
   }
-  return NextResponse.json({ ok: true, changed: data === true }); // false = repeat event, safely ignored
+  if (data === "not_pending") {
+    // Verified money arrived for an order that is no longer waiting for payment (e.g. cancelled).
+    // The payment is on record; the admin dashboard flags it so you can refund the customer.
+    console.error("PAYMENT FOR NON-PENDING ORDER, REFUND MAY BE NEEDED", event.orderId, event.reference);
+    return NextResponse.json({ ok: true, needsReview: true });
+  }
+  return NextResponse.json({ ok: true, changed: data === "paid" }); // "duplicate" = repeat event, safely ignored
 }

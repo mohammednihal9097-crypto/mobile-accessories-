@@ -6,6 +6,8 @@ import { formatMoney } from "@/lib/config";
 import { tokenMatches } from "@/lib/order-token";
 import { ORDER_STATUS_COLOR, ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { getPaymentProvider } from "@/lib/payments";
+const getPaymentProviderName = () => getPaymentProvider().name;
+import { siteUrl } from "@/lib/bot/data";
 import { createSecretClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
@@ -54,6 +56,7 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
       ? await getPaymentProvider().start({
           id: order.id, orderNumber: order.order_number, totalMinor: order.total_minor,
           currency: order.currency, customerName: order.customer_name, whatsapp: order.whatsapp_number,
+          returnUrl: `${siteUrl()}/order/${order.order_number}?t=${token}`,
         })
       : null;
 
@@ -84,7 +87,12 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
       {pay?.kind === "redirect" && (
         <a href={pay.url} className="block rounded-lg bg-blue-700 py-3 text-center font-semibold text-white">Pay now</a>
       )}
-      {pay?.kind === "unavailable" && <PaymentNotice />}
+      {pay?.kind === "redirect" && (
+        <p className="text-center text-xs text-slate-500">
+          After paying you come back here. Your order changes to &quot;Paid&quot; once the payment is confirmed, which can take a minute. Refresh this page to see it.
+        </p>
+      )}
+      {pay?.kind === "unavailable" && (getPaymentProviderName() === "placeholder" ? <PaymentNotice /> : <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{pay.reason}</p>)}
 
       <section className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
         <h2 className="mb-1 font-semibold">Progress</h2>

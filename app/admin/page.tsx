@@ -5,12 +5,14 @@ export default async function AdminHome() {
   const { supabase } = await requireAdmin();
   const count = async (status: string) =>
     (await supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", status)).count ?? 0;
-  const [pending, paid, processing, shipped, lowStock] = await Promise.all([
+  const [pending, paid, processing, shipped, lowStock, refunds] = await Promise.all([
     count("pending_payment"),
     count("paid"),
     count("processing"),
     count("shipped"),
     supabase.from("products").select("id", { count: "exact", head: true }).lte("stock_quantity", 5).eq("is_active", true),
+    // Verified payments on orders that are cancelled: the customer paid and needs a refund.
+    supabase.from("payments").select("id, orders!inner(status)", { count: "exact", head: true }).eq("verified", true).eq("orders.status", "cancelled"),
   ]);
 
   const tiles = [
@@ -19,6 +21,7 @@ export default async function AdminHome() {
     ["Processing", processing, "/admin/orders?status=processing"],
     ["Shipped", shipped, "/admin/orders?status=shipped"],
     ["Low or no stock (5 or fewer)", lowStock.count ?? 0, "/admin/products"],
+    ["Paid but cancelled: refund needed", refunds.count ?? 0, "/admin/orders?status=cancelled"],
   ] as const;
 
   return (

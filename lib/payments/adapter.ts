@@ -16,6 +16,8 @@ export type PaymentOrder = {
   currency: string;
   customerName: string;
   whatsapp: string;
+  /** Where the provider sends the customer back to after paying (our order page, with its private token). */
+  returnUrl: string;
 };
 
 export type PayStart =

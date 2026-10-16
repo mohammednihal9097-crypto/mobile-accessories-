@@ -31,11 +31,11 @@ These need your real Supabase project and accounts, and I did not place test ord
 
 ## 3. Known gaps and risks (honest list)
 
-- **No payment provider yet** (needs your country and provider decision). Until then orders sit as "Pending payment" and expire after 24 hours if the n8n expiry workflow is active. **You cannot take real orders without this.**
+- **Razorpay is coded but not connected** (needs your account, keys and webhook: see docs/stage5-razorpay.md). Until PAYMENT_PROVIDER=razorpay and the keys are set, orders sit as "Pending payment" and expire after 24 hours if the n8n expiry workflow is active. **You cannot take real orders until Razorpay is connected and tested.**
 - **Admin can mark an order "paid" by hand.** That is intended for money you have confirmed yourself, and it is recorded in the order history with the admin's ID. Only admins can do it.
 - **No rate limiting on checkout.** A honeypot field stops simple bots, and unpaid orders expire to free stock. For heavier protection add Vercel's firewall rate limits or a CAPTCHA before launch (I will not bypass or build around CAPTCHAs myself).
 - **No staff roles.** All admins can do everything, as you asked.
-- **Delivery area, tax and shipping fees are placeholders** in `lib/config.ts` (flat fee and free-over amount are made-up numbers). Prices are shown in INR as a placeholder.
+- **Delivery fees and GST are not final.** Delivery across India is decided, but the flat fee and free-over amount in `lib/config.ts` are made-up numbers, and GST is not calculated. Confirm both with an accountant.
 - **Store name** is still "Your Store Name" (`lib/config.ts`).
 - **Legal pages** are missing: privacy policy, terms, refund and shipping policy, contact details. Most countries and payment providers require them. Collecting names, phone numbers and addresses also carries data-protection duties in your country (for example India's DPDP Act). Please get advice.
 - **Customer order link** contains a secret token. Anyone with the link can see that one order. Customers are told to keep it private.
@@ -51,7 +51,7 @@ Selling country and currency, payment provider, delivery area and fees, cash on 
 ## 5. Launch checklist
 
 **Accounts and setup**
-- [ ] Supabase: migrations 0001, 0002 and 0003 run in order; admin user created and added to `admin_users`; "Allow new users to sign up" turned **off**
+- [ ] Supabase: migrations 0001, 0002, 0003 and 0004 run in order; admin user created and added to `admin_users`; "Allow new users to sign up" turned **off**
 - [ ] Supabase: upgrade the plan if you need backups; note the project region
 - [ ] Meta Business verified, WhatsApp number added, six templates approved (`docs/stage6-whatsapp-n8n.md`)
 - [ ] n8n running on https with the three workflows imported, credentials set, activated

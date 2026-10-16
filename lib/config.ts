@@ -1,16 +1,16 @@
 // Store-wide settings. Change them here; nothing else in the app hard-codes these.
-// TODO(decision): confirm the selling country, currency and delivery area.
+// Decided: selling in India, INR, delivery across India. Still to confirm: store name, delivery fees, GST.
 export const STORE = {
   name: "Your Store Name", // placeholder until you pick a brand name
   tagline: "Phone accessories that fit your phone",
-  currency: "INR", // placeholder — pending your selling-country decision
+  currency: "INR",
   locale: "en-IN",
-  // Placeholder delivery rules (pending your decision). Amounts are in the smallest
+  // Delivery rules. The fee numbers are PLACEHOLDERS until you confirm them. Amounts are in the smallest
   // currency unit (paise for INR) to avoid rounding mistakes.
   shipping: {
     flatFee: 4900,
     freeOver: 49900,
-    areaNote: "Delivery area not decided yet — placeholder.",
+    areaNote: "We deliver across India.",
   },
 } as const;
 

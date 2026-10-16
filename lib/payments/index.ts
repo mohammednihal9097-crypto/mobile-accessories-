@@ -1,12 +1,13 @@
 import "server-only";
 import type { PaymentProvider } from "./adapter";
 import { placeholderProvider } from "./placeholder";
+import { razorpayProvider } from "./razorpay";
 
-// TODO(decision): after you confirm your selling country and provider, add e.g.
-//   import { razorpayProvider } from "./razorpay";
-// and map it below. Until then everything resolves to the placeholder.
+// PAYMENT_PROVIDER=razorpay switches on Razorpay. Anything else (or unset) uses the placeholder,
+// which starts no payments and rejects every webhook.
 const providers: Record<string, PaymentProvider> = {
   placeholder: placeholderProvider,
+  razorpay: razorpayProvider,
 };
 
 export function getPaymentProvider(): PaymentProvider {
