@@ -13,7 +13,7 @@ export default function PhoneSelector({ className = "" }: { className?: string }
       <select
         value={phone ?? ""}
         onChange={(e) => setMyPhone(e.target.value || null)}
-        className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-normal"
+        className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-normal"
       >
         <option value="">Choose your phone model…</option>
         {brands.map((b) => (

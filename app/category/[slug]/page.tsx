@@ -24,7 +24,7 @@ async function CategoryContent({ params }: { params: PageProps<"/category/[slug]
       <p className="text-sm text-slate-500">
         <Link href="/" className="hover:underline">Home</Link> / {category.name}
       </p>
-      <h1 className="text-2xl font-bold">{category.name}</h1>
+      <h1 className="text-2xl font-semibold">{category.name}</h1>
       <p className="text-slate-600">{category.description}</p>
       <ProductGrid products={items} />
     </div>

@@ -14,8 +14,8 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <Link href="/admin/products/new" className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white">Add product</Link>
+        <h1 className="text-2xl font-semibold">Products</h1>
+        <Link href="/admin/products/new" className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white">Add product</Link>
       </div>
       <Flash searchParams={searchParams} />
       <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
@@ -26,7 +26,7 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
           <tbody className="divide-y">
             {(products ?? []).map((p) => (
               <tr key={p.id}>
-                <td className="p-3"><Link href={`/admin/products/${p.id}`} className="font-medium text-blue-700 hover:underline">{p.name}</Link></td>
+                <td className="p-3"><Link href={`/admin/products/${p.id}`} className="font-medium text-brand-600 hover:underline">{p.name}</Link></td>
                 <td className="p-3">{(p.categories as unknown as { name: string } | null)?.name ?? "—"}</td>
                 <td className="p-3">{formatMoney(p.price_minor)}</td>
                 <td className="p-3"><span className="mr-2">{p.stock_quantity}</span><StockBadge stock={p.stock_quantity} /></td>

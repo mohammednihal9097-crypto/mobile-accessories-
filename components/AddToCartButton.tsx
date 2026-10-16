@@ -8,7 +8,7 @@ export default function AddToCartButton({ productId, stock }: { productId: strin
   const [added, setAdded] = useState(false);
   if (stock <= 0) {
     return (
-      <button disabled className="w-full rounded-lg bg-slate-200 py-3 font-semibold text-slate-500">
+      <button disabled className="w-full rounded-xl bg-slate-200 py-3 font-semibold text-slate-500">
         Out of stock
       </button>
     );
@@ -20,7 +20,7 @@ export default function AddToCartButton({ productId, stock }: { productId: strin
           addToCart(productId, 1, stock);
           setAdded(true);
         }}
-        className="w-full rounded-lg bg-blue-700 py-3 font-semibold text-white hover:bg-blue-800"
+        className="w-full rounded-xl bg-brand-600 py-3 font-semibold text-white hover:bg-brand-700"
       >
         Add to cart
       </button>

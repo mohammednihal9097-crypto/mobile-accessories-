@@ -14,7 +14,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <ProductImage product={product} />
       <div className="flex flex-1 flex-col gap-1 p-3">
         <h3 className="text-sm font-semibold leading-tight">{product.name}</h3>
-        <p className="font-bold text-blue-700">{formatMoney(product.price)}</p>
+        <p className="font-semibold text-brand-600">{formatMoney(product.price)}</p>
         <div className="mt-auto flex flex-wrap gap-1 pt-1">
           <StockBadge stock={product.stock} />
           <CompatBadge product={product} />

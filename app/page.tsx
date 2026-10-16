@@ -7,18 +7,19 @@ export default async function Home() {
   const { categories, products } = await getCatalog();
   return (
     <div className="space-y-10">
-      <section className="rounded-2xl bg-blue-700 px-6 py-10 text-white">
-        <h1 className="text-2xl font-bold sm:text-3xl">{STORE.tagline}</h1>
-        <p className="mt-2 max-w-md text-blue-100">
+<section className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700 px-6 py-12 text-white sm:px-10">
+        <span className="inline-block rounded-full bg-brand-500/30 px-3 py-1 text-xs font-semibold text-brand-100">Phone accessories, made easy</span>
+        <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl">{STORE.tagline}</h1>
+        <p className="mt-3 max-w-md text-brand-100">
           Check compatibility with your phone model before you buy. Order updates arrive on WhatsApp.
         </p>
-        <Link href="/products" className="mt-5 inline-block rounded-lg bg-white px-5 py-2.5 font-semibold text-blue-700">
+        <Link href="/products" className="mt-6 inline-block rounded-xl bg-white px-5 py-3 font-semibold text-slate-900 hover:bg-brand-50">
           Shop all products
         </Link>
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-bold">Shop by category</h2>
+        <h2 className="mb-3 text-lg font-semibold">Shop by category</h2>
         {categories.length === 0 ? (
           <p className="text-sm text-slate-500">No categories yet.</p>
         ) : (
@@ -27,7 +28,7 @@ export default async function Home() {
               <Link
                 key={c.slug}
                 href={`/category/${c.slug}`}
-                className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center text-sm font-medium hover:shadow-md"
+                className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center text-sm font-medium hover:border-brand-300 hover:shadow-md"
               >
                 <span className="text-3xl">{c.icon}</span>
                 {c.name}
@@ -38,7 +39,7 @@ export default async function Home() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-bold">Featured</h2>
+        <h2 className="mb-3 text-lg font-semibold">Featured</h2>
         {products.length === 0 ? (
           <p className="text-sm text-slate-500">Products are coming soon.</p>
         ) : (

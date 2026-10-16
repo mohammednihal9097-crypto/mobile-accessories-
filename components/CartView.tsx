@@ -33,7 +33,7 @@ export function OrderSummary() {
         <span>Delivery (placeholder rule)</span>
         <span>{shipping === 0 ? "Free" : formatMoney(shipping)}</span>
       </div>
-      <div className="flex justify-between text-base font-bold"><span>Total</span><span>{formatMoney(total)}</span></div>
+      <div className="flex justify-between text-base font-semibold"><span>Total</span><span>{formatMoney(total)}</span></div>
     </div>
   );
 }
@@ -45,7 +45,7 @@ export default function CartView() {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
         <p className="text-slate-600">Your cart is empty.</p>
-        <Link href="/products" className="mt-3 inline-block font-semibold text-blue-700 underline">Browse products</Link>
+        <Link href="/products" className="mt-3 inline-block font-semibold text-brand-600 underline">Browse products</Link>
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function CartView() {
         ))}
       </ul>
       <OrderSummary />
-      <Link href="/checkout" className="block rounded-lg bg-blue-700 py-3 text-center font-semibold text-white hover:bg-blue-800">
+      <Link href="/checkout" className="block rounded-xl bg-brand-600 py-3 text-center font-semibold text-white hover:bg-brand-700">
         Proceed to checkout
       </Link>
     </div>

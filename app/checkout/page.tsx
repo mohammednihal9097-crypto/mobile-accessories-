@@ -8,7 +8,7 @@ export default function CheckoutPage({ searchParams }: PageProps<"/checkout">) {
   return (
     <div className="space-y-4">
       <p className="text-sm"><Link href="/cart" className="text-slate-500 hover:underline">← Back to cart</Link></p>
-      <h1 className="text-2xl font-bold">Checkout</h1>
+      <h1 className="text-2xl font-semibold">Checkout</h1>
       <Flash searchParams={searchParams} />
       <CheckoutForm />
     </div>

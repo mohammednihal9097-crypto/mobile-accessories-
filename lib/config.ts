@@ -1,7 +1,7 @@
 // Store-wide settings. Change them here; nothing else in the app hard-codes these.
-// Decided: selling in India, INR, delivery across India. Still to confirm: store name, delivery fees, GST.
+// Decided: selling in India, INR, delivery across India. Still to confirm: delivery fees, GST.
 export const STORE = {
-  name: "Your Store Name", // placeholder until you pick a brand name
+  name: "Trio Store",
   tagline: "Phone accessories that fit your phone",
   currency: "INR",
   locale: "en-IN",

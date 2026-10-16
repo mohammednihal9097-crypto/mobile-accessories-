@@ -9,15 +9,16 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-lg font-bold text-blue-700">
+        <Link href="/" className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+          <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-600 text-base text-white">T</span>
           {STORE.name}
         </Link>
         <nav className="flex items-center gap-4 text-sm font-medium">
-          <Link href="/products" className="hover:text-blue-700">Shop</Link>
-          <Link href="/cart" className="relative rounded-full bg-blue-700 px-4 py-1.5 text-white">
+          <Link href="/products" className="text-slate-700 hover:text-brand-600">Shop</Link>
+          <Link href="/cart" className="relative rounded-xl bg-brand-600 px-4 py-2 text-white hover:bg-brand-700">
             Cart
             {count > 0 && (
-              <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-xs text-blue-700">{count}</span>
+              <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-xs text-brand-600">{count}</span>
             )}
           </Link>
         </nav>

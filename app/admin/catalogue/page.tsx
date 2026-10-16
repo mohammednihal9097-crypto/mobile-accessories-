@@ -2,7 +2,7 @@ import Flash from "@/components/admin/Flash";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { addCategory, addPhoneModel, deleteCategory, deletePhoneModel } from "../actions";
 
-const input = "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm";
+const input = "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm";
 
 export default async function CataloguePage({ searchParams }: PageProps<"/admin/catalogue">) {
   const { supabase } = await requireAdmin();
@@ -13,7 +13,7 @@ export default async function CataloguePage({ searchParams }: PageProps<"/admin/
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Categories &amp; phone models</h1>
+      <h1 className="text-2xl font-semibold">Categories &amp; phone models</h1>
       <Flash searchParams={searchParams} />
 
       <section className="space-y-3">
@@ -34,7 +34,7 @@ export default async function CataloguePage({ searchParams }: PageProps<"/admin/
           <input name="name" required placeholder="Name, e.g. Cases" className={input} />
           <input name="icon" placeholder="Emoji (optional)" className={input} />
           <input name="description" placeholder="Short description" className={input} />
-          <button className="rounded-lg bg-blue-700 px-3 py-2 text-sm font-semibold text-white">Add category</button>
+          <button className="rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white">Add category</button>
         </form>
       </section>
 
@@ -55,7 +55,7 @@ export default async function CataloguePage({ searchParams }: PageProps<"/admin/
         <form action={addPhoneModel} className="grid gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-3">
           <input name="brand" required placeholder="Brand" className={input} />
           <input name="name" required placeholder="Model name" className={input} />
-          <button className="rounded-lg bg-blue-700 px-3 py-2 text-sm font-semibold text-white">Add phone model</button>
+          <button className="rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white">Add phone model</button>
         </form>
         <p className="text-xs text-slate-500">Type model names exactly as customers know them. Deleting a model removes it from every product&apos;s compatibility list.</p>
       </section>

@@ -14,9 +14,9 @@ export default function Flash({ searchParams }: { searchParams: SP }) {
 async function Inner({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
   if (typeof sp.error === "string") {
-    return <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{sp.error}</p>;
+    return <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{sp.error}</p>;
   }
-  if (sp.saved) return <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-green-800">Saved.</p>;
-  if (sp.nochange) return <p role="status" className="rounded-lg bg-slate-100 p-3 text-sm text-slate-700">No change: the order was already in that state.</p>;
+  if (sp.saved) return <p role="status" className="rounded-xl bg-green-50 p-3 text-sm text-green-800">Saved.</p>;
+  if (sp.nochange) return <p role="status" className="rounded-xl bg-slate-100 p-3 text-sm text-slate-700">No change: the order was already in that state.</p>;
   return null;
 }

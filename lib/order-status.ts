@@ -9,7 +9,7 @@ export const ORDER_STATUS_LABEL: Record<string, string> = {
 
 export const ORDER_STATUS_COLOR: Record<string, string> = {
   pending_payment: "bg-amber-100 text-amber-900",
-  paid: "bg-blue-100 text-blue-900",
+  paid: "bg-brand-100 text-brand-800",
   processing: "bg-indigo-100 text-indigo-900",
   shipped: "bg-purple-100 text-purple-900",
   delivered: "bg-green-100 text-green-800",

@@ -26,11 +26,11 @@ export default async function AdminHome() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {tiles.map(([label, n, href]) => (
           <Link key={label} href={href} className="rounded-xl border border-slate-200 bg-white p-4 hover:shadow-md">
-            <p className="text-3xl font-bold text-blue-700">{n}</p>
+            <p className="text-3xl font-semibold text-brand-600">{n}</p>
             <p className="text-sm text-slate-600">{label}</p>
           </Link>
         ))}

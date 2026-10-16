@@ -17,7 +17,7 @@ export default async function AdminOrders({ searchParams }: PageProps<"/admin/or
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Orders</h1>
+      <h1 className="text-2xl font-semibold">Orders</h1>
       <div className="flex flex-wrap gap-2 text-sm">
         <Link href="/admin/orders" className="rounded-full border bg-white px-3 py-1">All</Link>
         {Object.entries(ORDER_STATUS_LABEL).map(([k, v]) => (
@@ -32,7 +32,7 @@ export default async function AdminOrders({ searchParams }: PageProps<"/admin/or
           <tbody className="divide-y">
             {(orders ?? []).map((o) => (
               <tr key={o.id}>
-                <td className="p-3"><Link href={`/admin/orders/${o.id}`} className="font-medium text-blue-700 hover:underline">{o.order_number}</Link></td>
+                <td className="p-3"><Link href={`/admin/orders/${o.id}`} className="font-medium text-brand-600 hover:underline">{o.order_number}</Link></td>
                 <td className="p-3">{o.customer_name}<br /><span className="text-xs text-slate-500">{o.whatsapp_number}</span></td>
                 <td className="p-3">{formatMoney(o.total_minor)}</td>
                 <td className="p-3"><span className={`rounded px-2 py-0.5 text-xs font-medium ${ORDER_STATUS_COLOR[o.status]}`}>{ORDER_STATUS_LABEL[o.status]}</span></td>

@@ -32,8 +32,8 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
       <div className="grid gap-6 sm:grid-cols-2">
         <ProductGallery product={product} />
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold">{product.name}</h1>
-          <p className="text-2xl font-bold text-blue-700">{formatMoney(product.price)}</p>
+          <h1 className="text-2xl font-semibold">{product.name}</h1>
+          <p className="text-2xl font-semibold text-brand-600">{formatMoney(product.price)}</p>
           <div className="flex items-center gap-2">
             <StockBadge stock={product.stock} />
             {product.stock > 5 && <span className="text-sm text-slate-500">{product.stock} available</span>}

@@ -29,7 +29,7 @@ export default function ProductGallery({ product }: { product: Product }) {
               key={p.url}
               onClick={() => setIndex(i)}
               aria-label={`Show photo ${i + 1}`}
-              className={`h-16 w-16 overflow-hidden rounded-lg border-2 ${i === index ? "border-blue-700" : "border-transparent"}`}
+              className={`h-16 w-16 overflow-hidden rounded-xl border-2 ${i === index ? "border-brand-600" : "border-transparent"}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={p.url} alt="" className="h-full w-full object-cover" />

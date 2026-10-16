@@ -23,9 +23,9 @@ async function Check({ searchParams }: { searchParams: PageProps<"/start">["sear
   }
   return (
     <div className="mx-auto max-w-md space-y-3 text-center">
-      <h1 className="text-xl font-bold">This link has expired</h1>
+      <h1 className="text-xl font-semibold">This link has expired</h1>
       <p className="text-slate-600">Message us on WhatsApp for a new link, or just browse the shop.</p>
-      <Link href="/products" className="inline-block rounded-lg bg-blue-700 px-5 py-2.5 font-semibold text-white">Go to the shop</Link>
+      <Link href="/products" className="inline-block rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white">Go to the shop</Link>
     </div>
   );
 }

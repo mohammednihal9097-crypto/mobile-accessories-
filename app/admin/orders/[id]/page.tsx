@@ -33,7 +33,7 @@ export default async function OrderDetail({ params, searchParams }: PageProps<"/
     <div className="space-y-5">
       <p className="text-sm"><Link href="/admin/orders" className="text-slate-500 hover:underline">← Orders</Link></p>
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold">{order.order_number}</h1>
+        <h1 className="text-2xl font-semibold">{order.order_number}</h1>
         <span className={`rounded px-2 py-0.5 text-sm font-medium ${ORDER_STATUS_COLOR[order.status]}`}>{ORDER_STATUS_LABEL[order.status]}</span>
       </div>
       <Flash searchParams={searchParams} />
@@ -56,7 +56,7 @@ export default async function OrderDetail({ params, searchParams }: PageProps<"/
           <hr className="my-2" />
           <p className="flex justify-between"><span>Subtotal</span><span>{formatMoney(order.subtotal_minor)}</span></p>
           <p className="flex justify-between"><span>Delivery</span><span>{formatMoney(order.shipping_minor)}</span></p>
-          <p className="flex justify-between font-bold"><span>Total</span><span>{formatMoney(order.total_minor)}</span></p>
+          <p className="flex justify-between font-semibold"><span>Total</span><span>{formatMoney(order.total_minor)}</span></p>
         </section>
       </div>
 
@@ -79,14 +79,14 @@ export default async function OrderDetail({ params, searchParams }: PageProps<"/
             <form action={setOrderStatus}>
               <input type="hidden" name="order_id" value={order.id} />
               <input type="hidden" name="status" value={next} />
-              <button className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white">{NEXT_BUTTON[next]}</button>
+              <button className="rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white">{NEXT_BUTTON[next]}</button>
             </form>
           )}
           {CAN_CANCEL.includes(order.status) && (
             <form action={setOrderStatus}>
               <input type="hidden" name="order_id" value={order.id} />
               <input type="hidden" name="status" value="cancelled" />
-              <button className="rounded-lg border border-red-300 px-4 py-2 font-semibold text-red-700">Cancel order and return stock</button>
+              <button className="rounded-xl border border-red-300 px-4 py-2 font-semibold text-red-700">Cancel order and return stock</button>
             </form>
           )}
         </div>

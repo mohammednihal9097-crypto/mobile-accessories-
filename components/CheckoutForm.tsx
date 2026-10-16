@@ -7,7 +7,7 @@ import { OrderSummary, useCartDetails } from "./CartView";
 import PaymentNotice from "./PaymentNotice";
 import { useWaLink } from "@/lib/wa-link";
 
-const field = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2";
+const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2";
 
 /** One key per page load: pressing "Place order" twice can never create two orders. */
 function IdempotencyKey() {
@@ -72,7 +72,7 @@ export default function CheckoutForm() {
 
       <button
         disabled={isSample || busy}
-        className="w-full rounded-lg bg-blue-700 py-3 font-semibold text-white hover:bg-blue-800 disabled:bg-slate-300 disabled:text-slate-600"
+        className="w-full rounded-xl bg-brand-600 py-3 font-semibold text-white hover:bg-brand-700 disabled:bg-slate-300 disabled:text-slate-600"
       >
         {isSample ? "Place order (unavailable in demo mode)" : busy ? "Placing order…" : "Place order"}
       </button>

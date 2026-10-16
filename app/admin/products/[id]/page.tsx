@@ -6,7 +6,7 @@ import StockBadge from "@/components/StockBadge";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { adjustStock } from "../../actions";
 
-const input = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
+const input = "rounded-xl border border-slate-300 px-3 py-2 text-sm";
 
 export default async function EditProduct({ params, searchParams }: PageProps<"/admin/products/[id]">) {
   const { id } = await params;
@@ -28,7 +28,7 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
   return (
     <div className="space-y-6">
       <p className="text-sm"><Link href="/admin/products" className="text-slate-500 hover:underline">← Products</Link></p>
-      <h1 className="text-2xl font-bold">{product.name}</h1>
+      <h1 className="text-2xl font-semibold">{product.name}</h1>
       <Flash searchParams={searchParams} />
 
       <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4">
@@ -46,7 +46,7 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
               <option value="damaged">Damaged / lost</option>
             </select>
           </label>
-          <button className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white">Apply</button>
+          <button className="rounded-xl bg-slate-800 px-4 py-2 text-sm font-semibold text-white">Apply</button>
         </form>
         <p className="text-xs text-slate-500">Stock changes are logged and can never go below zero. Orders subtract stock automatically.</p>
         {(moves ?? []).length > 0 && (

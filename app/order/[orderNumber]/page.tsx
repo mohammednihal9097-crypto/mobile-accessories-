@@ -64,12 +64,12 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
     <div className="mx-auto max-w-2xl space-y-4">
       {sp.placed && <ClearCartOnMount />}
       {sp.placed && (
-        <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-green-800">
+        <p role="status" className="rounded-xl bg-green-50 p-3 text-sm text-green-800">
           Thank you, {order.customer_name}! Your order is placed. <strong>Save this page&apos;s link</strong>: it is how you check your order.
         </p>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold">Order {order.order_number}</h1>
+        <h1 className="text-2xl font-semibold">Order {order.order_number}</h1>
         <span className={`rounded px-2 py-0.5 text-sm font-medium ${ORDER_STATUS_COLOR[order.status]}`}>{ORDER_STATUS_LABEL[order.status]}</span>
       </div>
       <p className="text-slate-700">{CUSTOMER_TEXT[order.status]}</p>
@@ -81,18 +81,18 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
         <hr className="my-2" />
         <p className="flex justify-between"><span>Subtotal</span><span>{formatMoney(order.subtotal_minor)}</span></p>
         <p className="flex justify-between"><span>Delivery</span><span>{order.shipping_minor === 0 ? "Free" : formatMoney(order.shipping_minor)}</span></p>
-        <p className="flex justify-between text-base font-bold"><span>Total</span><span>{formatMoney(order.total_minor)}</span></p>
+        <p className="flex justify-between text-base font-semibold"><span>Total</span><span>{formatMoney(order.total_minor)}</span></p>
       </section>
 
       {pay?.kind === "redirect" && (
-        <a href={pay.url} className="block rounded-lg bg-blue-700 py-3 text-center font-semibold text-white">Pay now</a>
+        <a href={pay.url} className="block rounded-xl bg-brand-600 py-3 text-center font-semibold text-white">Pay now</a>
       )}
       {pay?.kind === "redirect" && (
         <p className="text-center text-xs text-slate-500">
           After paying you come back here. Your order changes to &quot;Paid&quot; once the payment is confirmed, which can take a minute. Refresh this page to see it.
         </p>
       )}
-      {pay?.kind === "unavailable" && (getPaymentProviderName() === "placeholder" ? <PaymentNotice /> : <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{pay.reason}</p>)}
+      {pay?.kind === "unavailable" && (getPaymentProviderName() === "placeholder" ? <PaymentNotice /> : <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{pay.reason}</p>)}
 
       <section className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
         <h2 className="mb-1 font-semibold">Progress</h2>

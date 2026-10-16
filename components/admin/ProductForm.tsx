@@ -12,7 +12,7 @@ type Props = {
   photos?: { id: string; storage_path: string; alt: string }[];
 };
 
-const input = "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm";
+const input = "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm";
 
 export default function ProductForm({ categories, phones, product, selectedPhoneIds = [], photos = [] }: Props) {
   const brands = [...new Set(phones.map((p) => p.brand))];
@@ -76,7 +76,7 @@ export default function ProductForm({ categories, phones, product, selectedPhone
             {photos.map((ph) => (
               <label key={ph.id} className="space-y-1 text-xs">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photoPublicUrl(ph.storage_path)} alt={ph.alt} className="h-24 w-24 rounded-lg object-cover" />
+                <img src={photoPublicUrl(ph.storage_path)} alt={ph.alt} className="h-24 w-24 rounded-xl object-cover" />
                 <span className="flex items-center gap-1"><input type="checkbox" name="delete_photo" value={ph.id} /> Remove</span>
               </label>
             ))}
@@ -86,7 +86,7 @@ export default function ProductForm({ categories, phones, product, selectedPhone
         <p className="text-xs text-slate-500">JPG, PNG or WebP, under 5MB each, up to 4 at a time. The first photo is the main one.</p>
       </fieldset>
 
-      <button className="rounded-lg bg-blue-700 px-5 py-2.5 font-semibold text-white">Save product</button>
+      <button className="rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white">Save product</button>
     </form>
   );
 }
