@@ -1,0 +1,73 @@
+{
+  "name": "Store: cancel unpaid orders after 24h",
+  "nodes": [
+    {
+      "id": "09467dda-edb5-4550-9c78-96d70c904f50",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -40
+      ],
+      "parameters": {
+        "content": "DRAFT - not tested in your n8n yet.\n\nEvery hour, asks the website to cancel orders that are still unpaid after 24 hours and return their stock, so fake or abandoned orders cannot lock up your products. Pick the Header Auth credential (x-api-key = N8N_API_SHARED_SECRET) and replace YOUR-SITE.example.\n\nTurn this OFF if you later accept cash on delivery or bank transfers that stay unpaid for longer.",
+        "width": 520,
+        "height": 260
+      }
+    },
+    {
+      "id": "e54b1173-02b0-4392-92a5-ad214c116e67",
+      "name": "Every hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        200
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "35497c09-f78e-4ea4-89f9-86671539584a",
+      "name": "Cancel old unpaid orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SITE.example/api/bot/expire-unpaid",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every hour": {
+      "main": [
+        [
+          {
+            "node": "Cancel old unpaid orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

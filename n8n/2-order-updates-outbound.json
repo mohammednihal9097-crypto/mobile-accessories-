@@ -1,0 +1,203 @@
+{
+  "name": "WhatsApp: order updates -> customers",
+  "nodes": [
+    {
+      "id": "8b02ebf6-f261-476a-a62a-1c2202f08190",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -60
+      ],
+      "parameters": {
+        "content": "DRAFT - not tested in your n8n yet.\n\nEvery minute: ask the website for order updates waiting to be sent, send each as an APPROVED WhatsApp template, then tell the website the result. The website guarantees one message per status change.\n\nTemplates to create in Meta (names must match exactly): order_received, payment_received, order_processing, order_shipped, order_delivered, order_cancelled. Each has two variables: {{1}} customer name, {{2}} order number. See docs/stage6-whatsapp-n8n.md.\n\nReplace YOUR-SITE.example and YOUR_PHONE_NUMBER_ID, and pick credentials.",
+        "width": 560,
+        "height": 360
+      }
+    },
+    {
+      "id": "6eb2b46d-7e15-4b6a-9bc2-d8ef1a469e97",
+      "name": "Every minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        220
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e1ac33ff-21d7-4c13-b072-794cf4bc8667",
+      "name": "Get waiting updates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SITE.example/api/bot/notifications/pending",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      }
+    },
+    {
+      "id": "6982ed75-9dcc-40fa-a9b3-58b3e3126bc3",
+      "name": "One item per update",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        220
+      ],
+      "parameters": {
+        "fieldToSplitOut": "notifications",
+        "options": {}
+      }
+    },
+    {
+      "id": "5d5b2c0f-2fec-45c3-b17e-df8ad9c9c017",
+      "name": "Send WhatsApp template",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        1260,
+        220
+      ],
+      "parameters": {
+        "operation": "sendTemplate",
+        "phoneNumberId": "YOUR_PHONE_NUMBER_ID",
+        "recipientPhoneNumber": "={{ $json.to }}",
+        "template": "={{ $json.template }}|en",
+        "components": {
+          "component": [
+            {
+              "type": "body",
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "type": "text",
+                    "text": "={{ $json.customer_name }}"
+                  },
+                  {
+                    "type": "text",
+                    "text": "={{ $json.order_number }}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "3eb9b4b1-fd24-4c57-bcd1-4315565fed4f",
+      "name": "Tell website: sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1500,
+        140
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SITE.example/api/bot/notifications/ack",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ id: $('One item per update').item.json.id, ok: true }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "c5deaed7-d1af-4ca5-b2a4-bdf81917a873",
+      "name": "Tell website: failed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1500,
+        320
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SITE.example/api/bot/notifications/ack",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ id: $('One item per update').item.json.id, ok: false, error: String($json.error?.message || 'send failed') }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every minute": {
+      "main": [
+        [
+          {
+            "node": "Get waiting updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get waiting updates": {
+      "main": [
+        [
+          {
+            "node": "One item per update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "One item per update": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp template": {
+      "main": [
+        [
+          {
+            "node": "Tell website: sent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tell website: failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "name": "WhatsApp: customer messages -> store bot",
+  "nodes": [
+    {
+      "id": "d79217f3-616d-41ca-b8c3-d7f4df34f7c3",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -40
+      ],
+      "parameters": {
+        "content": "DRAFT - not tested in your n8n yet.\n\n1. Create credentials: 'Header Auth' (name x-api-key, value = N8N_INBOUND_SHARED_SECRET) for the Webhook node; 'Header Auth' (name x-api-key, value = N8N_API_SHARED_SECRET) for the HTTP node; 'WhatsApp API' for the WhatsApp node.\n2. Replace YOUR-SITE.example and YOUR_PHONE_NUMBER_ID.\n3. Activate. Then set the Production URL as N8N_INBOUND_WEBHOOK_URL on the website.\n\nAll answers come from the website's database via /api/bot/message. This workflow only moves messages.",
+        "width": 520,
+        "height": 330
+      }
+    },
+    {
+      "id": "83fe780e-71ff-4b06-a1d7-4dbe04d01bec",
+      "name": "Verified message from website",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        540,
+        200
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-inbound",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "09827e9a-b6c9-4b55-9dc4-240468c82727"
+    },
+    {
+      "id": "a0b9c3a1-115d-41b7-9f99-a5c8e55800f4",
+      "name": "Prepare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Photos, voice notes etc. have no text: send '5' so the bot hands over to a person.\nconst b = $input.first().json.body;\nreturn [{ json: { whatsapp: b.from, name: b.name || '', text: b.unsupported ? '5' : b.text } }];"
+      }
+    },
+    {
+      "id": "4d76597c-5132-4ac2-bee1-31c6d35262ce",
+      "name": "Ask the store bot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SITE.example/api/bot/message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ whatsapp: $json.whatsapp, name: $json.name, text: $json.text }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      }
+    },
+    {
+      "id": "e2f1d29c-495d-49a7-9004-f069e65dac68",
+      "name": "Send WhatsApp reply",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        1260,
+        200
+      ],
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "YOUR_PHONE_NUMBER_ID",
+        "recipientPhoneNumber": "={{ $('Prepare').item.json.whatsapp }}",
+        "textBody": "={{ $json.reply }}"
+      }
+    }
+  ],
+  "connections": {
+    "Verified message from website": {
+      "main": [
+        [
+          {
+            "node": "Prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare": {
+      "main": [
+        [
+          {
+            "node": "Ask the store bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask the store bot": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
