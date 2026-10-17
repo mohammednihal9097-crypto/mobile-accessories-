@@ -23,7 +23,7 @@ export const STORE = {
     email: "triostoreindia@gmail.com",
     phone: "[Your support phone number]",
     // WhatsApp number for customers to message, digits only with country code (example: 919876543210). Empty = hidden.
-    whatsappDigits: "",
+    whatsappDigits: "917511118549",
     grievanceOfficer: "[Name of the person who handles complaints]",
     jurisdictionCity: "[Your city]",
     // Placeholder policy numbers. Change them to what you really offer.
