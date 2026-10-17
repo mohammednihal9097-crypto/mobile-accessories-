@@ -39,3 +39,15 @@ export function parsePaymentLinkPaid(body: unknown): PaidEvent | null {
   if (!Number.isInteger(pay.amount) || typeof pay.currency !== "string") return null;
   return { orderId, reference: pay.id, amountMinor: pay.amount as number, currency: pay.currency };
 }
+
+/** A short, secret-free reason why an (already verified) event was not acted on. Used for diagnostics. */
+export function whyIgnored(body: unknown): string {
+  const p = body as Payload;
+  if (p?.event !== "payment_link.paid") return `event is ${typeof p?.event === "string" ? p.event : "missing"}, not payment_link.paid`;
+  const orderId = p.payload?.payment_link?.entity?.notes?.order_id;
+  if (typeof orderId !== "string") return "no order_id in the payment link notes";
+  const pay = p.payload?.payment?.entity;
+  if (!pay?.id) return "no payment in the event";
+  if (pay.status !== "captured") return `payment status is ${pay.status ?? "missing"}, not captured`;
+  return "amount or currency missing";
+}

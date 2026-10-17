@@ -1,7 +1,7 @@
 import "server-only";
 import { createSecretClient } from "../supabase/admin";
 import { WebhookVerificationError, type PaymentProvider } from "./adapter";
-import { parsePaymentLinkPaid, signatureIsValid } from "./razorpay-webhook";
+import { parsePaymentLinkPaid, signatureIsValid, whyIgnored } from "./razorpay-webhook";
 
 // Razorpay via hosted Payment Links (docs checked Oct 2026):
 //   POST https://api.razorpay.com/v1/payment_links   (HTTP Basic: key id + key secret)
@@ -75,7 +75,7 @@ export const razorpayProvider: PaymentProvider = {
   async verifyWebhook(rawBody, headers) {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     if (!secret || secret.startsWith("your-") || !signatureIsValid(rawBody, headers.get("x-razorpay-signature"), secret)) {
-      throw new WebhookVerificationError("bad signature");
+      throw new WebhookVerificationError(secret && !secret.startsWith("your-") ? "bad signature (secret in Razorpay and in the shop differ)" : "no webhook secret set in the shop");
     }
     const eventId = headers.get("x-razorpay-event-id");
     if (!eventId) throw new WebhookVerificationError("missing event id");
@@ -87,7 +87,7 @@ export const razorpayProvider: PaymentProvider = {
       throw new WebhookVerificationError("bad json");
     }
     const paid = parsePaymentLinkPaid(body);
-    if (!paid) return { kind: "ignored", reason: "not a captured payment-link payment" };
+    if (!paid) return { kind: "ignored", reason: whyIgnored(body) };
     return { kind: "paid", event: { eventId, orderId: paid.orderId, reference: paid.reference, amountMinor: paid.amountMinor, currency: paid.currency } };
   },
 };

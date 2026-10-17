@@ -3,6 +3,21 @@ import { WebhookVerificationError } from "@/lib/payments/adapter";
 import { getPaymentProvider } from "@/lib/payments";
 import { createSecretClient } from "@/lib/supabase/admin";
 
+/**
+ * Diagnostics: remember what happened to each webhook call (never any secret or customer data), so a failed
+ * delivery can be explained without server logs. Capped, and safe to delete once payments work end to end.
+ */
+async function diag(outcome: string) {
+  console.warn("payment webhook:", outcome);
+  try {
+    const db = createSecretClient();
+    const { count } = await db.from("webhook_events").select("event_id", { count: "exact", head: true }).eq("source", "diag:razorpay");
+    if ((count ?? 0) < 200) await db.from("webhook_events").insert({ source: "diag:razorpay", event_id: `${new Date().toISOString()} | ${outcome}`.slice(0, 250) });
+  } catch {
+    /* diagnostics must never break the webhook */
+  }
+}
+
 // The ONLY way an order becomes "paid". The provider calls this URL; we verify its signature first.
 // Order of operations: verify signature -> ask the database to record it (idempotent) -> answer 200.
 export async function POST(request: Request) {
@@ -14,13 +29,17 @@ export async function POST(request: Request) {
     result = await provider.verifyWebhook(rawBody, request.headers);
   } catch (e) {
     if (e instanceof WebhookVerificationError) {
+      await diag(`rejected: ${e.message}`);
       return NextResponse.json({ ok: false }, { status: 400 }); // unverified: change nothing
     }
     console.error("payment webhook error", e);
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 
-  if (result.kind === "ignored") return NextResponse.json({ ok: true, ignored: true });
+  if (result.kind === "ignored") {
+    await diag(`ignored: ${result.reason}`);
+    return NextResponse.json({ ok: true, ignored: true });
+  }
 
   const { event } = result;
   const { data, error } = await createSecretClient().rpc("mark_order_paid", {
@@ -48,5 +67,6 @@ export async function POST(request: Request) {
     console.error("PAYMENT FOR NON-PENDING ORDER, REFUND MAY BE NEEDED", event.orderId, event.reference);
     return NextResponse.json({ ok: true, needsReview: true });
   }
+  await diag(`result: ${String(data)}`);
   return NextResponse.json({ ok: true, changed: data === "paid" }); // "duplicate" = repeat event, safely ignored
 }

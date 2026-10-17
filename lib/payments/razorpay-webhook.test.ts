@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
-import { parsePaymentLinkPaid, signatureIsValid } from "./razorpay-webhook.ts";
+import { parsePaymentLinkPaid, signatureIsValid, whyIgnored } from "./razorpay-webhook.ts";
 
 const secret = "test-webhook-secret-123";
 const body = JSON.stringify({
@@ -40,4 +40,14 @@ test("other events and uncaptured or malformed payments are ignored", () => {
   noOrder.payload.payment_link.entity.notes = null;
   assert.equal(parsePaymentLinkPaid(noOrder), null);
   assert.equal(parsePaymentLinkPaid(null), null);
+});
+
+test("ignored events explain themselves without exposing data", () => {
+  assert.match(whyIgnored({ event: "order.paid" }), /order\.paid, not payment_link\.paid/);
+  const noOrder = JSON.parse(body);
+  noOrder.payload.payment_link.entity.notes = null;
+  assert.match(whyIgnored(noOrder), /no order_id/);
+  const auth = JSON.parse(body);
+  auth.payload.payment.entity.status = "authorized";
+  assert.match(whyIgnored(auth), /authorized, not captured/);
 });
