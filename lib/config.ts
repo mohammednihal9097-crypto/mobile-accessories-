@@ -25,7 +25,7 @@ export const STORE = {
     // WhatsApp number for customers to message, digits only with country code (example: 919876543210). Empty = hidden.
     whatsappDigits: "917511118549",
     grievanceOfficer: "Trio Support",
-    jurisdictionCity: "[Your city]",
+    jurisdictionCity: "Malappuram",
     // Placeholder policy numbers. Change them to what you really offer.
     returnWindowDays: 7,
     refundDays: 7,
