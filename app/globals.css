@@ -44,3 +44,27 @@ body {
 h1, h2, h3 {
   letter-spacing: -0.01em;
 }
+
+/* Soft page pattern: a faint purple dot grid that fades out toward the bottom, plus a whisper of
+   brand colour in the top corner. It sits behind everything, so cards and text stay crisp white. */
+body {
+  position: relative;
+  background-image: radial-gradient(60rem 28rem at 85% -4rem, rgba(103, 61, 230, 0.10), transparent 70%);
+  background-repeat: no-repeat;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle at center, rgba(103, 61, 230, 0.30) 1.1px, transparent 1.6px);
+  background-size: 24px 24px;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.12) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.12) 100%);
+}
+
+@media print {
+  body::before { display: none; }
+}
