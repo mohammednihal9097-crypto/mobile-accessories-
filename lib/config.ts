@@ -19,7 +19,7 @@ export const STORE = {
     reviewed: false,
     lastUpdated: "17 October 2026",
     businessName: "Trio Store",
-    address: "[Your registered business address]",
+    address: "Kerala, India",
     email: "triostoreindia@gmail.com",
     phone: "[Your support phone number]",
     // WhatsApp number for customers to message, digits only with country code (example: 919876543210). Empty = hidden.
