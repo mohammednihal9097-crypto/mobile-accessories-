@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { STORE } from "@/lib/config";
+import Logo from "./Logo";
 import { useCart } from "@/lib/cart";
 
 export default function Header() {
@@ -9,10 +9,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-          <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-600 text-base text-white">T</span>
-          {STORE.name}
-        </Link>
+        <Link href="/" aria-label="Trio Store home"><Logo /></Link>
         <nav className="flex items-center gap-4 text-sm font-medium">
           <Link href="/products" className="text-slate-700 hover:text-brand-600">Shop</Link>
           <Link href="/cart" className="relative rounded-xl bg-brand-600 px-4 py-2 text-white hover:bg-brand-700">

@@ -2,7 +2,7 @@
 // Decided: selling in India, INR, delivery across India. Still to confirm: delivery fees, GST.
 export const STORE = {
   name: "Trio Store",
-  tagline: "Phone accessories that fit your phone",
+  tagline: "Charge forward",
   currency: "INR",
   locale: "en-IN",
   // Delivery rules. The fee numbers are PLACEHOLDERS until you confirm them. Amounts are in the smallest
