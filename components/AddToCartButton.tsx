@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { CircleCheck, ShoppingBag } from "lucide-react";
 import { addToCart } from "@/lib/cart";
 
 export default function AddToCartButton({ productId, stock }: { productId: string; stock: number }) {
   const [added, setAdded] = useState(false);
   if (stock <= 0) {
     return (
-      <button disabled className="w-full rounded-xl bg-slate-200 py-3 font-semibold text-slate-500">
+      <button disabled className="w-full rounded-xl bg-slate-200 py-3.5 font-semibold text-slate-500">
         Out of stock
       </button>
     );
@@ -20,13 +21,15 @@ export default function AddToCartButton({ productId, stock }: { productId: strin
           addToCart(productId, 1, stock);
           setAdded(true);
         }}
-        className="w-full rounded-xl bg-brand-600 py-3 font-semibold text-white hover:bg-brand-700"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 py-3.5 font-semibold text-white shadow-sm shadow-brand-900/20 transition hover:bg-brand-700"
       >
+        <ShoppingBag className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
         Add to cart
       </button>
       {added && (
-        <p className="text-center text-sm text-green-700">
-          Added. <Link href="/cart" className="underline">View cart</Link>
+        <p role="status" className="flex items-center justify-center gap-1.5 text-sm text-green-700">
+          <CircleCheck className="h-4 w-4" aria-hidden="true" />
+          Added to your cart. <Link href="/cart" className="font-semibold underline">View cart</Link>
         </p>
       )}
     </div>

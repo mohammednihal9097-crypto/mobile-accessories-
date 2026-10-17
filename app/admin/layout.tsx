@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { LayoutDashboard, LogOut, MessageCircle, Package, ShoppingCart, Tags } from "lucide-react";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { logout } from "../login/actions";
 
 export const metadata = { title: "Admin", robots: { index: false, follow: false } };
+
+const NAV = [
+  { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
+  { href: "/admin/orders", label: "Orders", Icon: ShoppingCart },
+  { href: "/admin/products", label: "Products", Icon: Package },
+  { href: "/admin/handoffs", label: "WhatsApp chats", Icon: MessageCircle },
+  { href: "/admin/catalogue", label: "Categories & phones", Icon: Tags },
+];
 
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
@@ -17,14 +26,20 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
   const { email } = await requireAdmin();
   return (
     <div className="space-y-6">
-      <nav className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium">
-        <Link href="/admin" className="font-semibold">Admin</Link>
-        <Link href="/admin/orders" className="hover:text-brand-600">Orders</Link>
-        <Link href="/admin/products" className="hover:text-brand-600">Products</Link>
-        <Link href="/admin/handoffs" className="hover:text-brand-600">WhatsApp chats</Link>
-        <Link href="/admin/catalogue" className="hover:text-brand-600">Categories &amp; phones</Link>
-        <span className="ml-auto text-xs font-normal text-slate-500">{email}</span>
-        <form action={logout}><button className="text-red-700 hover:underline">Log out</button></form>
+      <nav className="flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 bg-white p-2 text-sm font-medium">
+        {NAV.map(({ href, label, Icon }) => (
+          <Link key={href} href={href} className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-slate-700 transition hover:bg-brand-50 hover:text-brand-700">
+            <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            {label}
+          </Link>
+        ))}
+        <span className="ml-auto hidden px-2 text-xs font-normal text-slate-500 md:inline">{email}</span>
+        <form action={logout}>
+          <button className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-red-700 transition hover:bg-red-50">
+            <LogOut className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            Log out
+          </button>
+        </form>
       </nav>
       {children}
     </div>

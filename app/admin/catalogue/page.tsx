@@ -1,6 +1,7 @@
 import Flash from "@/components/admin/Flash";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { addCategory, addPhoneModel, deleteCategory, deletePhoneModel } from "../actions";
+import { CATEGORY_ICONS, CategoryIcon } from "@/lib/category-icons";
 
 const input = "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm";
 
@@ -21,7 +22,7 @@ export default async function CataloguePage({ searchParams }: PageProps<"/admin/
         <ul className="divide-y rounded-xl border border-slate-200 bg-white">
           {(categories ?? []).map((c) => (
             <li key={c.id} className="flex items-center justify-between px-4 py-2 text-sm">
-              <span>{c.icon} {c.name} <span className="text-slate-400">/{c.slug}</span></span>
+              <span className="flex items-center gap-2"><CategoryIcon category={c} className="h-4 w-4 text-brand-600" /> {c.name} <span className="text-slate-400">/{c.slug}</span></span>
               <form action={deleteCategory}>
                 <input type="hidden" name="id" value={c.id} />
                 <button className="text-red-700 hover:underline">Delete</button>
@@ -32,7 +33,10 @@ export default async function CataloguePage({ searchParams }: PageProps<"/admin/
         </ul>
         <form action={addCategory} className="grid gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-4">
           <input name="name" required placeholder="Name, e.g. Cases" className={input} />
-          <input name="icon" placeholder="Emoji (optional)" className={input} />
+          <select name="icon" defaultValue="" className={input} aria-label="Icon">
+            <option value="">Icon: pick automatically</option>
+            {Object.entries(CATEGORY_ICONS).map(([key, { label }]) => <option key={key} value={key}>Icon: {label}</option>)}
+          </select>
           <input name="description" placeholder="Short description" className={input} />
           <button className="rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white">Add category</button>
         </form>
