@@ -74,6 +74,7 @@ export const razorpayProvider: PaymentProvider = {
 
   async verifyWebhook(rawBody, headers) {
     // .trim(): a pasted setting often carries an invisible trailing line break, which would make every signature check fail.
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET?.trim();
     if (!secret || secret.startsWith("your-") || !signatureIsValid(rawBody, headers.get("x-razorpay-signature"), secret)) {
       throw new WebhookVerificationError(secret && !secret.startsWith("your-") ? "bad signature (secret in Razorpay and in the shop differ)" : "no webhook secret set in the shop");
     }
