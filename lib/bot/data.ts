@@ -6,7 +6,12 @@ import { createSecretClient } from "../supabase/admin";
 import type { BotCatalog, BotDeps, BotOrder } from "./router";
 
 export function siteUrl(): string {
-  return (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  // Forgiving on purpose: stray spaces or line breaks are removed, "https://" is added if it was left off,
+  // and a trailing slash is dropped, so a small typo in the setting cannot break payment or WhatsApp links.
+  let url = (process.env.SITE_URL ?? "").replace(/\s+/g, "");
+  if (!url) return "http://localhost:3000";
+  if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+  return url.replace(/\/+$/, "");
 }
 
 /** Fresh (uncached) read, so the bot never quotes stale stock. */
