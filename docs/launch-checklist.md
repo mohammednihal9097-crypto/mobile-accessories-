@@ -37,7 +37,7 @@ These need your real Supabase project and accounts, and I did not place test ord
 - **No staff roles.** All admins can do everything, as you asked.
 - **Delivery fees and GST are not final.** Delivery across India is decided, but the flat fee and free-over amount in `lib/config.ts` are made-up numbers, and GST is not calculated. Confirm both with an accountant.
 - **Store name** is still "Your Store Name" (`lib/config.ts`).
-- **Legal pages** are missing: privacy policy, terms, refund and shipping policy, contact details. Most countries and payment providers require them. Collecting names, phone numbers and addresses also carries data-protection duties in your country (for example India's DPDP Act). Please get advice.
+- **Legal pages are drafts.** Privacy, terms, returns and refunds, shipping and contact pages now exist (footer links), written as starting templates. Fill the blanks in `lib/config.ts` under `legal` (business name, address, email, phone, WhatsApp number, grievance officer, city, return and refund days, dispatch and delivery times), have a lawyer check the wording, then set `reviewed: true` to remove the "Draft" notice. Most countries and payment providers require them. Collecting names, phone numbers and addresses also carries data-protection duties in your country (for example India's DPDP Act). Please get advice.
 - **Customer order link** contains a secret token. Anyone with the link can see that one order. Customers are told to keep it private.
 - **Content Security Policy** is not set. The basic headers are. A CSP can be added after you pick your final scripts and fonts.
 - **Backups:** the free Supabase plan has limited backup options. Check the plan before holding real orders.

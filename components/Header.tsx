@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Store } from "lucide-react";
+import { PackageSearch, ShoppingBag, Store } from "lucide-react";
 import Logo from "./Logo";
 import { useCatalog } from "./CatalogProvider";
 import { useCart } from "@/lib/cart";
@@ -26,6 +26,14 @@ export default function Header() {
           >
             <Store className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             <span className="hidden sm:inline">Shop</span>
+          </Link>
+          <Link
+            href="/track"
+            aria-label="Track your order"
+            className="hidden h-10 items-center gap-2 rounded-xl px-3 text-slate-700 transition hover:bg-slate-100 hover:text-brand-700 md:inline-flex"
+          >
+            <PackageSearch className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+            Track order
           </Link>
           <Link
             href="/cart"
