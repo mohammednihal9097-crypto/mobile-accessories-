@@ -18,7 +18,7 @@ export const STORE = {
   legal: {
     reviewed: false,
     lastUpdated: "17 October 2026",
-    businessName: "[Your registered business name]",
+    businessName: "Trio Store",
     address: "[Your registered business address]",
     email: "[Your support email]",
     phone: "[Your support phone number]",
