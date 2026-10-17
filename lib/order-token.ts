@@ -6,7 +6,7 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 // The token is derived from the checkout's idempotency key, so a repeated submit can rebuild the same link.
 
 export function linkSecret(): string {
-  const s = process.env.ORDER_LINK_SECRET;
+  const s = process.env.ORDER_LINK_SECRET?.trim();
   if (!s || s.length < 24 || s.startsWith("your-")) throw new Error("ORDER_LINK_SECRET is not set (see .env.example)");
   return s;
 }

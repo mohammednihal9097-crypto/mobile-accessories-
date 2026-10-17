@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
  * Returns an error response if the key is missing or wrong, otherwise null.
  */
 export function rejectUnlessBot(request: Request): NextResponse | null {
-  const expected = process.env.N8N_API_SHARED_SECRET;
+  const expected = process.env.N8N_API_SHARED_SECRET?.trim();
   if (!expected || expected.length < 24 || expected.startsWith("your-")) {
     return NextResponse.json({ ok: false, error: "bot API not configured" }, { status: 503 });
   }

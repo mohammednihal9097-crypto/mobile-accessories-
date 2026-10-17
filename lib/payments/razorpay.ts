@@ -16,8 +16,8 @@ const API = "https://api.razorpay.com/v1/payment_links";
 const LINK_LIFETIME_SECONDS = 12 * 3600; // shorter than the 24h unpaid-order expiry, so nobody pays a cancelled order
 
 function creds(): { id: string; secret: string } | null {
-  const id = process.env.RAZORPAY_KEY_ID;
-  const secret = process.env.RAZORPAY_KEY_SECRET;
+  const id = process.env.RAZORPAY_KEY_ID?.trim();
+  const secret = process.env.RAZORPAY_KEY_SECRET?.trim();
   return id && secret && !id.startsWith("your-") && !secret.startsWith("your-") ? { id, secret } : null;
 }
 
@@ -73,7 +73,7 @@ export const razorpayProvider: PaymentProvider = {
   },
 
   async verifyWebhook(rawBody, headers) {
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    // .trim(): a pasted setting often carries an invisible trailing line break, which would make every signature check fail.
     if (!secret || secret.startsWith("your-") || !signatureIsValid(rawBody, headers.get("x-razorpay-signature"), secret)) {
       throw new WebhookVerificationError(secret && !secret.startsWith("your-") ? "bad signature (secret in Razorpay and in the shop differ)" : "no webhook secret set in the shop");
     }
