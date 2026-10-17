@@ -190,12 +190,24 @@ export async function setOrderStatus(formData: FormData) {
   const back = `/admin/orders/${orderId}`;
   if (!ORDER_STATUSES.includes(status)) fail(back, "Unknown status.");
 
+  // Shipping details go out to the customer on WhatsApp with the "shipped" message.
+  const courier = text(formData, "courier").slice(0, 80);
+  const tracking = text(formData, "tracking_number").slice(0, 80);
+  const trackingUrl = text(formData, "tracking_url").slice(0, 300);
+  if (status === "shipped") {
+    if (!courier && !tracking) fail(back, "Enter the courier name or the tracking number before marking as shipped.");
+    if (trackingUrl && !/^https:\/\/\S+$/.test(trackingUrl)) fail(back, "The tracking link must start with https://");
+  }
+
   // The database function enforces the allowed steps and ignores repeats.
   const { data, error } = await createSecretClient().rpc("set_order_status", {
     p_order_id: orderId,
     p_new: status,
     p_actor: `admin:${userId}`,
     p_note: text(formData, "note") || null,
+    p_courier: courier || null,
+    p_tracking: tracking || null,
+    p_tracking_url: trackingUrl || null,
   });
   if (error) {
     fail(back, error.message.includes("invalid_transition") ? "That status change isn't allowed from the current status." : error.message);
@@ -214,4 +226,24 @@ export async function resolveHandoff(formData: FormData) {
   if (error) fail("/admin/handoffs", error.message);
   revalidatePath("/admin/handoffs");
   redirect("/admin/handoffs?saved=1");
+}
+
+// ---------------------------------------------------------------- WhatsApp alert numbers
+
+export async function addAdminNumber(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const number = "+" + text(formData, "number").replace(/[^\d]/g, "");
+  if (!/^\+[1-9]\d{7,14}$/.test(number)) fail("/admin/notifications", "Enter the number with country code, for example +91 98765 43210.");
+  const { error } = await supabase.from("admin_whatsapp_numbers").insert({ number, label: text(formData, "label").slice(0, 60) || null });
+  if (error) fail("/admin/notifications", error.message.includes("duplicate") ? "That number is already on the list." : error.message);
+  revalidatePath("/admin/notifications");
+  redirect("/admin/notifications?saved=1");
+}
+
+export async function deleteAdminNumber(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from("admin_whatsapp_numbers").delete().eq("id", text(formData, "id"));
+  if (error) fail("/admin/notifications", error.message);
+  revalidatePath("/admin/notifications");
+  redirect("/admin/notifications?saved=1");
 }

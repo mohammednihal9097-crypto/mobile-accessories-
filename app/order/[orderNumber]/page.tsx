@@ -40,7 +40,7 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
   const db = createSecretClient();
   const { data: order } = await db
     .from("orders")
-    .select("id, order_number, status, customer_name, whatsapp_number, currency, subtotal_minor, shipping_minor, total_minor, lookup_token_hash, created_at")
+    .select("id, order_number, status, customer_name, whatsapp_number, currency, subtotal_minor, shipping_minor, total_minor, lookup_token_hash, created_at, courier_name, tracking_number, tracking_url, shipping_address")
     .eq("order_number", orderNumber)
     .maybeSingle();
   // Same "not found" for a wrong order number and a wrong token, so numbers can't be guessed.
@@ -84,8 +84,28 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
         <p className="flex justify-between text-base font-semibold"><span>Total</span><span>{formatMoney(order.total_minor)}</span></p>
       </section>
 
+      {(order.status === "shipped" || order.status === "delivered") && (order.courier_name || order.tracking_number) && (
+        <section className="space-y-1 rounded-xl border border-slate-200 bg-white p-4 text-sm">
+          <h2 className="font-semibold">Delivery details</h2>
+          {order.courier_name && <p>Courier: {order.courier_name}</p>}
+          {order.tracking_number && <p>Tracking number: {order.tracking_number}</p>}
+          {order.tracking_url && (
+            <p><a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-700 underline">Track your parcel</a></p>
+          )}
+        </section>
+      )}
       {pay?.kind === "redirect" && (
         <a href={pay.url} className="block rounded-xl bg-brand-600 py-3 text-center font-semibold text-white">Pay now</a>
+      )}
+      {(order.status === "shipped" || order.status === "delivered") && (order.courier_name || order.tracking_number) && (
+        <section className="space-y-1 rounded-xl border border-slate-200 bg-white p-4 text-sm">
+          <h2 className="font-semibold">Delivery details</h2>
+          {order.courier_name && <p>Courier: {order.courier_name}</p>}
+          {order.tracking_number && <p>Tracking number: {order.tracking_number}</p>}
+          {order.tracking_url && (
+            <p><a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-700 underline">Track your parcel</a></p>
+          )}
+        </section>
       )}
       {pay?.kind === "redirect" && (
         <p className="text-center text-xs text-slate-500">

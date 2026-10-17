@@ -22,7 +22,7 @@ Meta WhatsApp Cloud API ──► your website  /api/whatsapp/webhook
                               n8n sends the reply via WhatsApp
 
 Order status changes (admin or payment) ──► saved in the "notifications" table (once per change)
-n8n workflow 2, every minute ──► asks the website for waiting updates ──► sends WhatsApp template ──► confirms back
+n8n workflow 2, every minute ──► asks the website for waiting messages ──► sends each as a WhatsApp template ──► confirms back
 n8n workflow 3, every hour   ──► cancels orders unpaid after 24h and returns their stock
 ```
 
@@ -57,30 +57,46 @@ Fill the Stage 6 section of `.env.example`. Generate long random strings for the
 4. Note the **Phone number ID** and create a **permanent access token** (System User) for n8n. Keep it secret.
 5. Copy the **App Secret** (App settings > Basic) into `WHATSAPP_APP_SECRET`.
 6. Webhook: callback URL `https://YOUR-SITE/api/whatsapp/webhook`, verify token = your `WHATSAPP_VERIFY_TOKEN`. Subscribe to the **messages** field. Your site must be public (https) for this; use the real deployed site, not localhost.
-7. **Message templates** (WhatsApp Manager > Message templates), category **Utility**, language English. Names must match exactly. Each has two variables, `{{1}}` = customer name, `{{2}}` = order number. Meta must approve them (can take up to a day), and only approved templates can be sent.
+7. **Message templates** (WhatsApp Manager > Message templates), category **Utility**, language **English** (code `en`). Names must match exactly, and the `{{1}}`, `{{2}}`... numbering must match the table, because the website fills them in that order. Meta must approve each template (can take up to a day), and only approved templates can be sent. When creating each one Meta asks for an example value per variable; any realistic example works.
 
-   | Name | Suggested text |
-   |---|---|
-   | `order_received` | Hi {{1}}, we received your order {{2}}. We will confirm once payment is verified. |
-   | `payment_received` | Hi {{1}}, payment for order {{2}} is confirmed. We will pack it soon. |
-   | `order_processing` | Hi {{1}}, we are packing order {{2}}. |
-   | `order_shipped` | Hi {{1}}, order {{2}} has been shipped. |
-   | `order_delivered` | Hi {{1}}, order {{2}} was delivered. Thank you for shopping with us. |
-   | `order_cancelled` | Hi {{1}}, order {{2}} was cancelled. Reply here if you have questions. |
+   **Customer messages (receipt and delivery details):**
 
+   | Name | Text (copy exactly) | What fills the variables |
+   |---|---|---|
+   | `order_received` | Hi {{1}}, thank you for your order {{2}}. Items: {{3}}. Total: {{4}}. Delivering to: {{5}}. We will confirm once your payment is verified. View your order: {{6}} | name, order number, items, total, address, private order link |
+   | `payment_received` | Hi {{1}}, we received your payment for order {{2}}. Receipt - items: {{3}}. Amount paid: {{4}}. Payment reference: {{5}}. We will pack your order soon. View your order: {{6}} | name, order number, items, total, payment reference, order link |
+   | `order_processing` | Hi {{1}}, we are packing your order {{2}}. | name, order number |
+   | `order_shipped` | Hi {{1}}, your order {{2}} has been shipped. Courier: {{3}}. Tracking number: {{4}}. Track it here: {{5}} | name, order number, courier, tracking number, tracking link (or order link) |
+   | `order_delivered` | Hi {{1}}, your order {{2}} was delivered. Thank you for shopping with us. | name, order number |
+   | `order_cancelled` | Hi {{1}}, your order {{2}} was cancelled. Reply here if you have questions. | name, order number |
+
+   **Admin alerts (sent to the numbers you list in Admin > WhatsApp alerts):**
+
+   | Name | Text (copy exactly) | What fills the variables |
+   |---|---|---|
+   | `admin_new_order` | New order {{1}} from {{2}} ({{3}}). Items: {{4}}. Total: {{5}}. Deliver to: {{6}}. Status: waiting for payment. | order number, customer name, customer WhatsApp, items, total, address |
+   | `admin_order_paid` | Order {{1}} is PAID: {{2}} from {{3}}. Items: {{4}}. Deliver to: {{5}}. Please pack and ship. | order number, total, customer name, items, address |
+   | `admin_order_cancelled` | Order {{1}} from {{2}} was cancelled. | order number, customer name |
+
+   The website cleans every value: line breaks and tabs become " | ", long space runs are collapsed, and empty values become "-". Meta's current docs do not spell out these formatting limits, so this is a safe default. Message bodies are limited to 1024 characters, and a very long item list is cut to 900 characters.
    Why templates: Meta only lets a business start a conversation, or write after the customer's service window closes, with an approved template. Meta's rules and prices change, so check the current WhatsApp Business Platform pricing page before launch.
 
 ### D. n8n (cloud or self-hosted; it must be reachable from the internet over https)
 1. Import the three files in [n8n/](../n8n/) (Workflows > Import from file).
-2. Create credentials: two **Header Auth** credentials with header name `x-api-key` (one holding `N8N_INBOUND_SHARED_SECRET` for the incoming webhook, one holding `N8N_API_SHARED_SECRET` for calls to your site) and one **WhatsApp API** credential with your token and business account ID.
+2. Create credentials (all **Header Auth**): (a) header name `x-api-key`, value = `N8N_INBOUND_SHARED_SECRET`, for the incoming webhook; (b) header name `x-api-key`, value = `N8N_API_SHARED_SECRET`, for calls to your site; (c) header name `Authorization`, value = `Bearer ` followed by your WhatsApp access token, for the calls to Meta's Cloud API (`graph.facebook.com`). The workflows send through the Cloud API directly instead of the n8n WhatsApp node, so that any template and any number of variables work.
 3. In every workflow replace `https://YOUR-SITE.example` with your real site address, and `YOUR_PHONE_NUMBER_ID` with your phone number ID, and choose the credentials on each node.
 4. Activate the workflows. Copy workflow 1's **Production URL** into `N8N_INBOUND_WEBHOOK_URL`.
 
-**Be aware:** the three workflow files are drafts I wrote by hand, validated as JSON only. I could not open them in n8n, so node settings (especially the WhatsApp template node) may need a small adjustment in n8n's editor. Run each workflow once manually and check the result.
+**Be aware:** the three workflow files are drafts I wrote by hand, validated as JSON only. I could not open them in n8n, so a node setting may need a small adjustment in n8n's editor. Run each workflow once manually and check the result. The Cloud API address uses version `v25.0`, which is what Meta's current examples show; if Meta retires it, change the number in the two Graph API nodes.
 
-### E. Try it safely
+### E. Admin numbers and shipping details (done inside the shop admin)
+1. Run [0005_whatsapp_receipts.sql](../supabase/migrations/0005_whatsapp_receipts.sql) in the Supabase SQL Editor (after 0001 to 0004).
+2. In **Admin > WhatsApp alerts**, add the WhatsApp number(s) that should receive order alerts. Use the full international format, for example +91 98765 43210. This is the only place admin numbers are stored.
+3. When you mark an order **shipped**, the admin order page asks for the courier and tracking number (and an optional tracking link). They are saved on the order and sent to the customer in the shipped message. At least the courier or the tracking number is required.
+
+### F. Try it safely
 1. With Meta's test number, add your own phone as a test recipient and send `hi`.
-2. In admin, change an order's status. Within a minute you should receive the matching template.
+2. In admin, change an order's status. Within a minute the customer number should receive the matching template, and your admin numbers should receive the alert for new, paid and cancelled orders. **Admin > WhatsApp alerts** lists every message with its status and any error from WhatsApp.
 3. Send `5`. The chat should appear in **Admin > WhatsApp chats**.
 
 ## Hand-over to a person

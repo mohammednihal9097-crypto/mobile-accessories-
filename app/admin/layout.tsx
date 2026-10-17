@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { LayoutDashboard, LogOut, MessageCircle, Package, ShoppingCart, Tags } from "lucide-react";
+import { BellRing, LayoutDashboard, LogOut, MessageCircle, Package, ShoppingCart, Tags } from "lucide-react";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { logout } from "../login/actions";
 
@@ -11,6 +11,7 @@ const NAV = [
   { href: "/admin/orders", label: "Orders", Icon: ShoppingCart },
   { href: "/admin/products", label: "Products", Icon: Package },
   { href: "/admin/handoffs", label: "WhatsApp chats", Icon: MessageCircle },
+  { href: "/admin/notifications", label: "WhatsApp alerts", Icon: BellRing },
   { href: "/admin/catalogue", label: "Categories & phones", Icon: Tags },
 ];
 

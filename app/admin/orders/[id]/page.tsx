@@ -46,6 +46,14 @@ export default async function OrderDetail({ params, searchParams }: PageProps<"/
           {order.email && <p>{order.email}</p>}
           <h2 className="mb-1 mt-3 font-semibold">Deliver to</h2>
           {Object.values(address ?? {}).map((line, i) => <p key={i}>{String(line)}</p>)}
+          {(order.courier_name || order.tracking_number) && (
+            <>
+              <h2 className="mb-1 mt-3 font-semibold">Shipping</h2>
+              {order.courier_name && <p>Courier: {order.courier_name}</p>}
+              {order.tracking_number && <p>Tracking: {order.tracking_number}</p>}
+              {order.tracking_url && <p><a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-brand-700 underline">Tracking link</a></p>}
+            </>
+          )}
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
@@ -75,11 +83,34 @@ export default async function OrderDetail({ params, searchParams }: PageProps<"/
         <h2 className="font-semibold">Update status</h2>
         {!next && !CAN_CANCEL.includes(order.status) && <p className="text-slate-600">This order is finished. No further changes.</p>}
         <div className="flex flex-wrap gap-2">
-          {next && (
+          {next && next !== "shipped" && (
             <form action={setOrderStatus}>
               <input type="hidden" name="order_id" value={order.id} />
               <input type="hidden" name="status" value={next} />
               <button className="rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white">{NEXT_BUTTON[next]}</button>
+            </form>
+          )}
+          {next === "shipped" && (
+            <form action={setOrderStatus} className="w-full space-y-3 rounded-xl border border-brand-200 bg-brand-50/40 p-4">
+              <input type="hidden" name="order_id" value={order.id} />
+              <input type="hidden" name="status" value="shipped" />
+              <p className="font-semibold">Shipping details <span className="font-normal text-slate-600">(sent to the customer on WhatsApp)</span></p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block">Courier
+                  <input name="courier" list="couriers" placeholder="e.g. Delhivery" className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2" />
+                  <datalist id="couriers">
+                    <option value="India Post" /><option value="Delhivery" /><option value="Blue Dart" /><option value="DTDC" />
+                    <option value="Ecom Express" /><option value="Xpressbees" /><option value="Shadowfax" />
+                  </datalist>
+                </label>
+                <label className="block">Tracking number
+                  <input name="tracking_number" placeholder="e.g. 1234567890" className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2" />
+                </label>
+              </div>
+              <label className="block">Tracking link (optional)
+                <input name="tracking_url" type="url" placeholder="https://..." className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2" />
+              </label>
+              <button className="rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white">{NEXT_BUTTON.shipped}</button>
             </form>
           )}
           {CAN_CANCEL.includes(order.status) && (

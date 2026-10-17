@@ -2,7 +2,7 @@
   "name": "Store: cancel unpaid orders after 24h",
   "nodes": [
     {
-      "id": "09467dda-edb5-4550-9c78-96d70c904f50",
+      "id": "03c2627f-2e9e-4a08-8090-177b9891ab73",
       "name": "Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -17,7 +17,7 @@
       }
     },
     {
-      "id": "e54b1173-02b0-4392-92a5-ad214c116e67",
+      "id": "ea451f36-8a35-42e7-9104-1d5d468d009d",
       "name": "Every hour",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "35497c09-f78e-4ea4-89f9-86671539584a",
+      "id": "23e842ed-5f35-4a3a-8996-aee64e9ee7f1",
       "name": "Cancel old unpaid orders",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,

@@ -1,23 +1,23 @@
 {
-  "name": "WhatsApp: order updates -> customers",
+  "name": "WhatsApp: receipts, delivery updates and admin alerts",
   "nodes": [
     {
-      "id": "8b02ebf6-f261-476a-a62a-1c2202f08190",
+      "id": "301e2419-6651-4f10-82cb-c80a4f9d6c40",
       "name": "Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         -80,
-        -60
+        -80
       ],
       "parameters": {
-        "content": "DRAFT - not tested in your n8n yet.\n\nEvery minute: ask the website for order updates waiting to be sent, send each as an APPROVED WhatsApp template, then tell the website the result. The website guarantees one message per status change.\n\nTemplates to create in Meta (names must match exactly): order_received, payment_received, order_processing, order_shipped, order_delivered, order_cancelled. Each has two variables: {{1}} customer name, {{2}} order number. See docs/stage6-whatsapp-n8n.md.\n\nReplace YOUR-SITE.example and YOUR_PHONE_NUMBER_ID, and pick credentials.",
-        "width": 560,
-        "height": 360
+        "content": "DRAFT - not tested in your n8n yet.\n\nEvery minute: asks the website for messages waiting to go out (customer receipts, delivery updates, and alerts to your admin numbers), sends each one with its approved WhatsApp template through Meta's Cloud API, then tells the website whether it worked. The website guarantees one message per status change per person.\n\nThe website prepares everything: template name, recipient, and the values for {{1}}, {{2}}... (items, total, address, tracking). This workflow just sends.\n\nCredentials: 'Header Auth' x-api-key = N8N_API_SHARED_SECRET (for the 3 website calls); 'Header Auth' Authorization = Bearer YOUR_WHATSAPP_TOKEN (for 'Send via WhatsApp').\nReplace YOUR-SITE.example and YOUR_PHONE_NUMBER_ID.\n\nTemplates (names, texts) are listed in docs/stage6-whatsapp-n8n.md. They must be APPROVED in Meta first.",
+        "width": 620,
+        "height": 400
       }
     },
     {
-      "id": "6eb2b46d-7e15-4b6a-9bc2-d8ef1a469e97",
+      "id": "2fd6a653-24a5-40c8-90ca-e739d30bf838",
       "name": "Every minute",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -37,8 +37,8 @@
       }
     },
     {
-      "id": "e1ac33ff-21d7-4c13-b072-794cf4bc8667",
-      "name": "Get waiting updates",
+      "id": "fd192d6b-f023-46d9-bc29-e6282b9a7bf6",
+      "name": "Get waiting messages",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -54,8 +54,8 @@
       }
     },
     {
-      "id": "6982ed75-9dcc-40fa-a9b3-58b3e3126bc3",
-      "name": "One item per update",
+      "id": "4fc535f1-82d0-4df4-9d42-d97fcceef95d",
+      "name": "One item per message",
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
@@ -68,43 +68,28 @@
       }
     },
     {
-      "id": "5d5b2c0f-2fec-45c3-b17e-df8ad9c9c017",
-      "name": "Send WhatsApp template",
-      "type": "n8n-nodes-base.whatsApp",
-      "typeVersion": 1.1,
+      "id": "afdedf1c-835d-4b88-9d2d-d187f8582b90",
+      "name": "Send via WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         1260,
         220
       ],
       "parameters": {
-        "operation": "sendTemplate",
-        "phoneNumberId": "YOUR_PHONE_NUMBER_ID",
-        "recipientPhoneNumber": "={{ $json.to }}",
-        "template": "={{ $json.template }}|en",
-        "components": {
-          "component": [
-            {
-              "type": "body",
-              "bodyParameters": {
-                "parameter": [
-                  {
-                    "type": "text",
-                    "text": "={{ $json.customer_name }}"
-                  },
-                  {
-                    "type": "text",
-                    "text": "={{ $json.order_number }}"
-                  }
-                ]
-              }
-            }
-          ]
-        }
+        "method": "POST",
+        "url": "https://graph.facebook.com/v25.0/YOUR_PHONE_NUMBER_ID/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $json.to, type: 'template', template: { name: $json.template, language: { code: $json.language }, components: [{ type: 'body', parameters: $json.body_params.map(t => ({ type: 'text', text: t })) }] } }) }}",
+        "options": {}
       },
       "onError": "continueErrorOutput"
     },
     {
-      "id": "3eb9b4b1-fd24-4c57-bcd1-4315565fed4f",
+      "id": "893acb9b-16ff-47bf-a334-a9534f24d464",
       "name": "Tell website: sent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -119,12 +104,12 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ id: $('One item per update').item.json.id, ok: true }) }}",
+        "jsonBody": "={{ JSON.stringify({ id: $('One item per message').item.json.id, ok: true }) }}",
         "options": {}
       }
     },
     {
-      "id": "c5deaed7-d1af-4ca5-b2a4-bdf81917a873",
+      "id": "75942d3f-b321-4b50-b624-215c7db35e2b",
       "name": "Tell website: failed",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -139,7 +124,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ id: $('One item per update').item.json.id, ok: false, error: String($json.error?.message || 'send failed') }) }}",
+        "jsonBody": "={{ JSON.stringify({ id: $('One item per message').item.json.id, ok: false, error: String($json.error?.message || 'send failed').slice(0, 400) }) }}",
         "options": {}
       }
     }
@@ -149,36 +134,36 @@
       "main": [
         [
           {
-            "node": "Get waiting updates",
+            "node": "Get waiting messages",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get waiting updates": {
+    "Get waiting messages": {
       "main": [
         [
           {
-            "node": "One item per update",
+            "node": "One item per message",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "One item per update": {
+    "One item per message": {
       "main": [
         [
           {
-            "node": "Send WhatsApp template",
+            "node": "Send via WhatsApp",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Send WhatsApp template": {
+    "Send via WhatsApp": {
       "main": [
         [
           {
