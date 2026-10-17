@@ -68,3 +68,11 @@ body::before {
 @media print {
   body::before { display: none; }
 }
+
+/* On phones, form fields at 16px or larger stop iOS from zooming the page when you tap into them. */
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px; }
+}
+
+/* Long words (emails, product names) never push the page sideways */
+body { overflow-wrap: anywhere; }

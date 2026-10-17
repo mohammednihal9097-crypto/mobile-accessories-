@@ -38,7 +38,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
           {filtering ? "Nothing here is listed for your phone." : "No products here yet."}
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
           {shown.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       )}

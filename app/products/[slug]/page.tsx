@@ -29,8 +29,8 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
         <Link href="/" className="hover:underline">Home</Link> /{" "}
         {category && <Link href={`/category/${category.slug}`} className="hover:underline">{category.name}</Link>}
       </p>
-      <div className="grid gap-6 sm:grid-cols-2">
-        <ProductGallery product={product} />
+      <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
+        <div className="self-start md:sticky md:top-24"><ProductGallery product={product} /></div>
         <div className="space-y-4">
           <h1 className="text-2xl font-semibold">{product.name}</h1>
           <p className="text-2xl font-semibold text-brand-600">{formatMoney(product.price)}</p>

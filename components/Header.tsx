@@ -8,7 +8,7 @@ export default function Header() {
   const count = useCart().reduce((n, l) => n + l.quantity, 0);
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" aria-label="Trio Store home"><Logo /></Link>
         <nav className="flex items-center gap-4 text-sm font-medium">
           <Link href="/products" className="text-slate-700 hover:text-brand-600">Shop</Link>

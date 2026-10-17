@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <CatalogProvider catalog={catalog}>
           <SampleBanner />
           <Header />
-          <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">{children}</main>
           <Footer />
         </CatalogProvider>
       </body>

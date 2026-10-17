@@ -7,9 +7,9 @@ export default async function Home() {
   const { categories, products } = await getCatalog();
   return (
     <div className="space-y-10">
-<section className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700 px-6 py-12 text-white sm:px-10">
+<section className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700 px-6 py-12 text-white sm:px-10 lg:px-14 lg:py-16">
         <span className="inline-block rounded-full bg-brand-500/30 px-3 py-1 text-xs font-semibold text-brand-100">Phone accessories, made easy</span>
-        <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl">{STORE.tagline}</h1>
+        <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">{STORE.tagline}</h1>
         <p className="mt-3 max-w-md text-brand-100">
           Check compatibility with your phone model before you buy. Order updates arrive on WhatsApp.
         </p>
@@ -23,7 +23,7 @@ export default async function Home() {
         {categories.length === 0 ? (
           <p className="text-sm text-slate-500">No categories yet.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
             {categories.map((c) => (
               <Link
                 key={c.slug}
@@ -43,7 +43,7 @@ export default async function Home() {
         {products.length === 0 ? (
           <p className="text-sm text-slate-500">Products are coming soon.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {products.slice(0, 4).map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
