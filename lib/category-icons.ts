@@ -1,13 +1,22 @@
 import { createElement } from "react";
 import {
-  BatteryCharging, Cable, Car, Headphones, Package, PlugZap, ShieldCheck, Smartphone, Speaker, Watch,
+  BatteryCharging, Cable, Camera, Car, Gamepad2, Headphones, Keyboard, Laptop, Lightbulb, Package, PlugZap,
+  ShieldCheck, Smartphone, Speaker, Tablet, Tv, Watch,
   type LucideIcon, type LucideProps,
 } from "lucide-react";
 
 // Line icons for categories. Admins pick one by key (stored in categories.icon). Older rows that hold an
 // emoji or nothing get an icon guessed from the category name, so nothing shows an emoji any more.
 export const CATEGORY_ICONS: Record<string, { label: string; Icon: LucideIcon }> = {
-  case: { label: "Phone / case", Icon: Smartphone },
+  phone: { label: "Phones", Icon: Smartphone },
+  tablet: { label: "Tablets", Icon: Tablet },
+  laptop: { label: "Laptops & computers", Icon: Laptop },
+  camera: { label: "Cameras", Icon: Camera },
+  gaming: { label: "Gaming", Icon: Gamepad2 },
+  smarthome: { label: "Smart home", Icon: Lightbulb },
+  tv: { label: "TV & displays", Icon: Tv },
+  keyboard: { label: "Keyboards & mice", Icon: Keyboard },
+  case: { label: "Cases & covers", Icon: Smartphone },
   charger: { label: "Charger", Icon: PlugZap },
   cable: { label: "Cable", Icon: Cable },
   power: { label: "Power bank", Icon: BatteryCharging },
@@ -20,6 +29,14 @@ export const CATEGORY_ICONS: Record<string, { label: string; Icon: LucideIcon }>
 };
 
 const GUESSES: [RegExp, string][] = [
+  [/laptop|computer|notebook|pc\b/i, "laptop"],
+  [/tablet|ipad/i, "tablet"],
+  [/camera|drone|action|photo/i, "camera"],
+  [/gam(e|ing)|console|controller/i, "gaming"],
+  [/smart.?home|bulb|sensor|automation|alexa/i, "smarthome"],
+  [/\btv\b|display|monitor|projector/i, "tv"],
+  [/keyboard|mouse|mice/i, "keyboard"],
+  [/phone|mobile/i, "phone"],
   [/case|cover|back/i, "case"],
   [/charg|adapter|plug/i, "charger"],
   [/cable|wire|cord/i, "cable"],

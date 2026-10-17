@@ -15,7 +15,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: STORE.name,
-  description: STORE.tagline,
+  description: `${STORE.name}: gadgets for every need. ${STORE.tagline}.`,
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

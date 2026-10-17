@@ -6,7 +6,7 @@ import { CategoryIcon } from "@/lib/category-icons";
 import ProductCard from "@/components/ProductCard";
 
 const FEATURES = [
-  { Icon: BadgeCheck, title: "Fit checked", text: "Every product lists the exact phone models it fits." },
+  { Icon: BadgeCheck, title: "Fit checked", text: "Products list the phone models and devices they work with." },
   { Icon: PackageCheck, title: "Clear stock", text: "See what is in stock before you order. No surprises." },
   { Icon: MessageCircle, title: "WhatsApp updates", text: "Order and delivery updates on WhatsApp (coming soon)." },
 ];
@@ -22,11 +22,11 @@ export default async function Home() {
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-brand-100 ring-1 ring-white/15">
               <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
-              Phone accessories, made easy
+              Gadgets, made easy
             </span>
             <h1 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">{STORE.tagline}</h1>
             <p className="mt-4 max-w-md text-base text-brand-100 sm:text-lg">
-              Check compatibility with your phone model before you buy. Order updates arrive on WhatsApp.
+              Shop smart gadgets for every need. Check compatibility with your phone before you buy, and get order updates on WhatsApp.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/products" className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-slate-900 transition hover:bg-brand-50">
@@ -52,10 +52,10 @@ export default async function Home() {
               </div>
               <div className="mt-4 rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-500">Your phone model</div>
               <ul className="mt-4 space-y-2.5 text-sm">
-                {["Cases & covers", "Chargers & cables", "Screen protectors"].map((t) => (
+                {["Audio & earbuds", "Chargers & power", "Smart wearables"].map((t) => (
                   <li key={t} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5">
                     <span>{t}</span>
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700"><BadgeCheck className="h-4 w-4" />Fit shown</span>
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700"><BadgeCheck className="h-4 w-4" />Compatibility shown</span>
                   </li>
                 ))}
               </ul>
@@ -83,7 +83,7 @@ export default async function Home() {
         <div className="mb-5 flex items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Shop by category</h2>
-            <p className="mt-1 text-sm text-slate-500">Find accessories by what you need.</p>
+            <p className="mt-1 text-sm text-slate-500">Find the right gadget by what you need.</p>
           </div>
           <Link href="/products" className="hidden items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-800 sm:inline-flex">
             View all <ArrowRight className="h-4 w-4" aria-hidden="true" />

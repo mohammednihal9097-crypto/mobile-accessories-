@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         <div className="space-y-3 lg:col-span-2">
           <Logo />
-          <p className="max-w-sm text-sm text-slate-600">{STORE.tagline}. Phone accessories with compatibility you can check before you buy.</p>
+          <p className="max-w-sm text-sm text-slate-600">{STORE.tagline}. Gadgets for every need, with compatibility you can check before you buy.</p>
         </div>
 
         <div>
