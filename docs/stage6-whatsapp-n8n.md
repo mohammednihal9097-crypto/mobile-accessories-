@@ -1,3 +1,5 @@
+> **n8n is optional.** The website can answer customers and send receipts and alerts by itself. See [whatsapp-without-n8n.md](whatsapp-without-n8n.md). This page describes the n8n route.
+
 # Stage 6: WhatsApp + n8n (what is built, and what YOU must set up)
 
 **Nothing outside this project is configured.** I have not created, connected or tested any Meta, WhatsApp or n8n account. The code and the workflow files are ready. The steps below are yours.

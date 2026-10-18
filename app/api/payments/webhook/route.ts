@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { flushNotifications } from "@/lib/notifications/flush";
 import { WebhookVerificationError } from "@/lib/payments/adapter";
 import { getPaymentProvider } from "@/lib/payments";
 import { createSecretClient } from "@/lib/supabase/admin";
@@ -68,5 +69,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, needsReview: true });
   }
   await diag(`result: ${String(data)}`);
+  if (data === "paid") after(() => flushNotifications()); // payment receipt and admin alert go out now
   return NextResponse.json({ ok: true, changed: data === "paid" }); // "duplicate" = repeat event, safely ignored
 }

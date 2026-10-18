@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test lib/bot/router.test.ts lib/bot/protect.test.ts lib/payments/razorpay-webhook.test.ts lib/notifications/templates.test.ts"
+    "test": "node --test lib/bot/router.test.ts lib/bot/protect.test.ts lib/payments/razorpay-webhook.test.ts lib/notifications/templates.test.ts lib/whatsapp/payload.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

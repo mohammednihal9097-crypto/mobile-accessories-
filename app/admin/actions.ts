@@ -3,6 +3,8 @@
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath, updateTag } from "next/cache";
+import { after } from "next/server";
+import { flushNotifications } from "@/lib/notifications/flush";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { createSecretClient } from "@/lib/supabase/admin";
 
@@ -213,6 +215,7 @@ export async function setOrderStatus(formData: FormData) {
     fail(back, error.message.includes("invalid_transition") ? "That status change isn't allowed from the current status." : error.message);
   }
   if (status === "cancelled") updateTag("catalog"); // stock was returned
+  after(() => flushNotifications()); // the customer's WhatsApp update goes out now
   revalidatePath("/admin/orders");
   revalidatePath(back);
   redirect(`${back}?${data ? "saved=1" : "nochange=1"}`);

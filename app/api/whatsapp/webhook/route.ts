@@ -1,5 +1,9 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { after } from "next/server";
+import { normalizeWhatsapp } from "@/lib/bot/auth";
+import { respondToCustomer } from "@/lib/bot/respond";
 import { createSecretClient } from "@/lib/supabase/admin";
+import { sendText, whatsappConfigured } from "@/lib/whatsapp/cloud";
 
 // Meta (WhatsApp Cloud API) sends customer messages HERE first. We check that the request really came
 // from Meta, drop repeats, then pass a clean copy to n8n. n8n never sees unverified traffic.
@@ -41,9 +45,12 @@ export async function POST(request: Request) {
     return new Response("bad json", { status: 400 });
   }
 
-  const forwardUrl = process.env.N8N_INBOUND_WEBHOOK_URL?.trim();
-  const forwardKey = process.env.N8N_INBOUND_SHARED_SECRET?.trim();
+  // n8n is optional. A setting that still holds placeholder text (REPLACE..., your-..., paste-...) counts as "not set".
+  const real = (v: string | undefined) => (v && !/REPLACE|your-|paste-|choose-|generate-/i.test(v) ? v : undefined);
+  const forwardUrl = real(process.env.N8N_INBOUND_WEBHOOK_URL?.trim());
+  const forwardKey = real(process.env.N8N_INBOUND_SHARED_SECRET?.trim());
   const db = createSecretClient();
+  const direct: { whatsapp: string; name?: string; text: string }[] = [];
 
   for (const entry of payload.entry ?? []) {
     for (const change of entry.changes ?? []) {
@@ -61,10 +68,16 @@ export async function POST(request: Request) {
           return new Response("error", { status: 500 }); // Meta will retry
         }
 
+        // Without n8n: the website answers the customer itself (after replying 200 to Meta, so Meta never waits).
         if (!forwardUrl || !forwardKey) {
-          console.error("N8N_INBOUND_WEBHOOK_URL / N8N_INBOUND_SHARED_SECRET not set");
-          await db.from("webhook_events").delete().match({ source: "whatsapp", event_id: m.id });
-          return new Response("not configured", { status: 500 });
+          if (!whatsappConfigured()) {
+            console.error("No n8n and no WHATSAPP_ACCESS_TOKEN / WHATSAPP_PHONE_NUMBER_ID: cannot answer messages");
+            await db.from("webhook_events").delete().match({ source: "whatsapp", event_id: m.id });
+            return new Response("not configured", { status: 500 });
+          }
+          const whatsapp = normalizeWhatsapp(m.from);
+          if (whatsapp) direct.push({ whatsapp, name, text: (text || "5").slice(0, 1000) }); // no text (photo, voice): hand over to a person
+          continue;
         }
 
         try {
@@ -84,6 +97,15 @@ export async function POST(request: Request) {
         }
       }
     }
+  }
+  if (direct.length > 0) {
+    after(async () => {
+      for (const d of direct) {
+        const r = await respondToCustomer(d);
+        const sent = await sendText(d.whatsapp, r.reply);
+        if (!sent.ok) console.error("WhatsApp reply not sent:", sent.error);
+      }
+    });
   }
   return new Response("ok", { status: 200 });
 }

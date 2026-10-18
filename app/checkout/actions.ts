@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
+import { flushNotifications } from "@/lib/notifications/flush";
 import { updateTag } from "next/cache";
 import { shippingFor, STORE } from "@/lib/config";
 import { hashToken, tokenFor, verifyWaLink } from "@/lib/order-token";
@@ -99,5 +101,6 @@ export async function placeOrder(formData: FormData) {
   if (!row?.o_number) fail("We couldn't place your order. Please try again.");
 
   updateTag("catalog"); // stock numbers on the shop update straight away
+  after(() => flushNotifications()); // customer receipt and admin alert go out now (does nothing until WhatsApp sending is set up)
   redirect(`/order/${row.o_number}?t=${token}&placed=1`);
 }
