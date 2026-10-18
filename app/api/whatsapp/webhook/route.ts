@@ -8,7 +8,7 @@ import { createSecretClient } from "@/lib/supabase/admin";
 /** Step 1: Meta's one-time "is this really your server?" handshake. */
 export async function GET(request: Request) {
   const p = new URL(request.url).searchParams;
-  const expected = process.env.WHATSAPP_VERIFY_TOKEN;
+  const expected = process.env.WHATSAPP_VERIFY_TOKEN?.trim(); // .trim(): pasted settings can carry a hidden line break
   if (expected && p.get("hub.mode") === "subscribe" && p.get("hub.verify_token") === expected) {
     return new Response(p.get("hub.challenge") ?? "", { status: 200 });
   }
@@ -16,8 +16,8 @@ export async function GET(request: Request) {
 }
 
 function signatureValid(rawBody: string, header: string | null): boolean {
-  const secret = process.env.WHATSAPP_APP_SECRET;
-  if (!secret || secret.startsWith("your-") || !header?.startsWith("sha256=")) return false;
+  const secret = process.env.WHATSAPP_APP_SECRET?.trim();
+  if (!secret || secret.startsWith("your-") || secret.startsWith("paste-") || !header?.startsWith("sha256=")) return false;
   const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
   const given = header.slice("sha256=".length);
   const a = Buffer.from(expected);
@@ -41,8 +41,8 @@ export async function POST(request: Request) {
     return new Response("bad json", { status: 400 });
   }
 
-  const forwardUrl = process.env.N8N_INBOUND_WEBHOOK_URL;
-  const forwardKey = process.env.N8N_INBOUND_SHARED_SECRET;
+  const forwardUrl = process.env.N8N_INBOUND_WEBHOOK_URL?.trim();
+  const forwardKey = process.env.N8N_INBOUND_SHARED_SECRET?.trim();
   const db = createSecretClient();
 
   for (const entry of payload.entry ?? []) {
