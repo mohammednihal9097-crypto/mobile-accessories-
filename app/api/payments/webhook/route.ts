@@ -2,6 +2,7 @@ import { after, NextResponse } from "next/server";
 import { flushNotifications } from "@/lib/notifications/flush";
 import { WebhookVerificationError } from "@/lib/payments/adapter";
 import { getPaymentProvider } from "@/lib/payments";
+import { reconcileOrderPayment } from "@/lib/payments/reconcile";
 import { createSecretClient } from "@/lib/supabase/admin";
 
 /**
@@ -19,6 +20,16 @@ async function diag(outcome: string) {
   }
 }
 
+/** The order id named in a payment-link event (UNTRUSTED: only used to know which order to ask Razorpay about). */
+function orderIdHint(raw: string): string | null {
+  try {
+    const id = JSON.parse(raw)?.payload?.payment_link?.entity?.notes?.order_id;
+    return typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id) ? id : null;
+  } catch {
+    return null;
+  }
+}
+
 // The ONLY way an order becomes "paid". The provider calls this URL; we verify its signature first.
 // Order of operations: verify signature -> ask the database to record it (idempotent) -> answer 200.
 export async function POST(request: Request) {
@@ -31,6 +42,14 @@ export async function POST(request: Request) {
   } catch (e) {
     if (e instanceof WebhookVerificationError) {
       await diag(`rejected: ${e.message}`);
+      // Safe fallback: the signature did not match (for example the secret differs), so do NOT trust the request.
+      // Instead ask Razorpay's own API whether that order was really paid. If yes, record it and stop the retries.
+      const hint = orderIdHint(rawBody);
+      if (hint) {
+        const r = await reconcileOrderPayment(hint);
+        await diag(`fallback: asked Razorpay directly -> ${r}`);
+        if (r === "paid" || r === "already-paid") return NextResponse.json({ ok: true, verifiedWithRazorpay: true });
+      }
       return NextResponse.json({ ok: false }, { status: 400 }); // unverified: change nothing
     }
     console.error("payment webhook error", e);

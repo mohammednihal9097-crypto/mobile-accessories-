@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath, updateTag } from "next/cache";
 import { after } from "next/server";
 import { flushNotifications } from "@/lib/notifications/flush";
+import { reconcileOrderPayment } from "@/lib/payments/reconcile";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { createSecretClient } from "@/lib/supabase/admin";
 
@@ -249,4 +250,18 @@ export async function deleteAdminNumber(formData: FormData) {
   if (error) fail("/admin/notifications", error.message);
   revalidatePath("/admin/notifications");
   redirect("/admin/notifications?saved=1");
+}
+
+/** Asks Razorpay directly whether this order was paid, and records it if so (safe: the answer comes from Razorpay). */
+export async function checkPayment(formData: FormData) {
+  await requireAdmin();
+  const orderId = text(formData, "order_id");
+  const back = `/admin/orders/${orderId}`;
+  const result = await reconcileOrderPayment(orderId);
+  revalidatePath("/admin/orders");
+  revalidatePath(back);
+  if (result === "paid") redirect(`${back}?saved=1`);
+  if (result === "already-paid") redirect(`${back}?nochange=1`);
+  if (result === "error") fail(back, "Could not reach Razorpay just now. Try again in a minute.");
+  fail(back, result === "not-paid" ? "Razorpay does not show a completed payment for this order yet." : "This order has no Razorpay payment link to check.");
 }

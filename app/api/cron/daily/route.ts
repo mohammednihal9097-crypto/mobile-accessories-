@@ -2,6 +2,7 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { flushNotifications } from "@/lib/notifications/flush";
+import { reconcileAllPending } from "@/lib/payments/reconcile";
 import { createSecretClient } from "@/lib/supabase/admin";
 
 // Safety-net job run by Vercel on a schedule (see vercel.json). It:
@@ -16,11 +17,12 @@ export async function GET(request: Request) {
   const want = Buffer.from(`Bearer ${secret}`);
   if (given.length !== want.length || !timingSafeEqual(given, want)) return NextResponse.json({ ok: false }, { status: 401 });
 
+  const payments = await reconcileAllPending(25); // any order Razorpay says is paid but we missed
   const sent = await flushNotifications(50);
   const { data: cancelled, error } = await createSecretClient().rpc("expire_unpaid_orders", { p_hours: 24 });
   if (error) console.error("expire_unpaid_orders failed", error.message);
   if (typeof cancelled === "number" && cancelled > 0) revalidateTag("catalog", "max"); // stock came back
   // Cancelling creates "cancelled" messages: send them now too.
   const after = typeof cancelled === "number" && cancelled > 0 ? await flushNotifications(50) : null;
-  return NextResponse.json({ ok: true, whatsapp: sent, cancelledUnpaid: cancelled ?? 0, whatsappAfterCancel: after });
+  return NextResponse.json({ ok: true, payments, whatsapp: sent, cancelledUnpaid: cancelled ?? 0, whatsappAfterCancel: after });
 }

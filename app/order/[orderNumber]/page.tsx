@@ -6,6 +6,7 @@ import { formatMoney } from "@/lib/config";
 import { tokenMatches } from "@/lib/order-token";
 import { ORDER_STATUS_COLOR, ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { getPaymentProvider } from "@/lib/payments";
+import { reconcileOrderPayment } from "@/lib/payments/reconcile";
 const getPaymentProviderName = () => getPaymentProvider().name;
 import { siteUrl } from "@/lib/bot/data";
 import { createSecretClient } from "@/lib/supabase/admin";
@@ -38,13 +39,18 @@ async function OrderContent({ params, searchParams }: { params: PageProps<"/orde
 
   // Customers have no database access. The server looks the order up and checks the secret token.
   const db = createSecretClient();
-  const { data: order } = await db
-    .from("orders")
-    .select("id, order_number, status, customer_name, whatsapp_number, currency, subtotal_minor, shipping_minor, total_minor, lookup_token_hash, created_at, courier_name, tracking_number, tracking_url, shipping_address")
-    .eq("order_number", orderNumber)
-    .maybeSingle();
+  const columns = "id, order_number, status, customer_name, whatsapp_number, currency, subtotal_minor, shipping_minor, total_minor, lookup_token_hash, created_at, courier_name, tracking_number, tracking_url, shipping_address";
+  const first = await db.from("orders").select(columns).eq("order_number", orderNumber).maybeSingle();
   // Same "not found" for a wrong order number and a wrong token, so numbers can't be guessed.
-  if (!order || !tokenMatches(token, order.lookup_token_hash)) notFound();
+  if (!first.data || !tokenMatches(token, first.data.lookup_token_hash)) notFound();
+  let order = first.data;
+
+  // Still waiting for payment? Ask Razorpay directly whether it was paid. This makes the page correct even if
+  // the automatic confirmation was slow, and it is safe: the answer comes from Razorpay, not from the visitor.
+  if (order.status === "pending_payment" && (await reconcileOrderPayment(order.id)) === "paid") {
+    const refreshed = await db.from("orders").select(columns).eq("id", order.id).maybeSingle();
+    if (refreshed.data) order = refreshed.data;
+  }
 
   const [{ data: items }, { data: events }] = await Promise.all([
     db.from("order_items").select("id, product_name, unit_price_minor, quantity").eq("order_id", order.id),

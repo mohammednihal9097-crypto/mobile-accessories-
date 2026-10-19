@@ -4,7 +4,7 @@ import Flash from "@/components/admin/Flash";
 import { formatMoney } from "@/lib/config";
 import { CAN_CANCEL, NEXT_STATUS, ORDER_STATUS_COLOR, ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { requireAdmin } from "@/lib/supabase/auth";
-import { setOrderStatus } from "../../actions";
+import { checkPayment, setOrderStatus } from "../../actions";
 
 const NEXT_BUTTON: Record<string, string> = {
   paid: "Mark as paid (payment received outside the website)",
@@ -121,6 +121,13 @@ export default async function OrderDetail({ params, searchParams }: PageProps<"/
             </form>
           )}
         </div>
+        {order.status === "pending_payment" && (
+          <form action={checkPayment} className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <input type="hidden" name="order_id" value={order.id} />
+            <button className="rounded-xl border border-brand-300 bg-white px-4 py-2 font-semibold text-brand-700 hover:bg-brand-50">Check payment with Razorpay</button>
+            <span className="text-xs text-slate-600">Asks Razorpay directly. If the customer really paid, the order is marked Paid for you.</span>
+          </form>
+        )}
         {order.status === "pending_payment" && (
           <p className="text-xs text-amber-800">Only mark as paid after you have confirmed the money arrived in your payment account or bank. Do not rely on a customer&apos;s message or screenshot.</p>
         )}
