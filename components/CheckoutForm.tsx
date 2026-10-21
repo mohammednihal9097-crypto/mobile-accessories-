@@ -8,6 +8,7 @@ import { OrderSummary, useCartDetails } from "./CartView";
 import PaymentNotice from "./PaymentNotice";
 import { useWaLink } from "@/lib/wa-link";
 import { STORE } from "@/lib/config";
+import { COUNTRIES, DEFAULT_DIAL } from "@/lib/country-codes";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5";
 
@@ -58,11 +59,20 @@ export default function CheckoutForm() {
           <label className="block text-sm">Full name<input name="name" required minLength={2} className={field} autoComplete="name" /></label>
           <label className="block text-sm">
             WhatsApp number
-            <input
-              name="whatsapp" required type="tel" className={field} autoComplete="tel"
-              placeholder="+91 98765 43210" defaultValue={signedWhatsapp?.wa ?? ""} readOnly={!!signedWhatsapp}
-            />
-            <span className="text-xs text-slate-500">With country code. We will send order updates here.</span>
+            {signedWhatsapp ? (
+              <input name="whatsapp" required type="tel" className={field} autoComplete="tel" defaultValue={signedWhatsapp.wa} readOnly />
+            ) : (
+              <span className="flex gap-2">
+                <select name="country_code" defaultValue={DEFAULT_DIAL} aria-label="Country code" className={`${field} w-44 shrink-0`}>
+                  {COUNTRIES.map((c) => <option key={`${c.name}`} value={c.dial}>{c.name} ({c.dial})</option>)}
+                </select>
+                <input
+                  name="whatsapp" required type="tel" inputMode="tel" className={field} autoComplete="tel-national"
+                  placeholder="98765 43210" pattern="[0-9 ()\-+]{5,20}" title="Your number without the country code"
+                />
+              </span>
+            )}
+            <span className="text-xs text-slate-500">Choose your country, then type your number without the code. We will send order updates here.</span>
           </label>
           <label className="block text-sm">Email (for your order details and payment receipt)<input name="email" type="email" required className={field} autoComplete="email" /></label>
         </fieldset>

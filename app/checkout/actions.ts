@@ -5,6 +5,7 @@ import { after } from "next/server";
 import { flushNotifications } from "@/lib/notifications/flush";
 import { updateTag } from "next/cache";
 import { shippingFor, STORE } from "@/lib/config";
+import { joinPhone } from "@/lib/country-codes";
 import { hashToken, tokenFor, verifyWaLink } from "@/lib/order-token";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createSecretClient } from "@/lib/supabase/admin";
@@ -45,13 +46,16 @@ export async function placeOrder(formData: FormData) {
 
   // --- customer details
   const name = text(formData, "name", 120);
-  const whatsappRaw = text(formData, "whatsapp", 30).replace(/[\s()-]/g, "");
+  // The form sends a country code and the number beside it; a signed WhatsApp link sends the full +number alone.
+  const dialCode = text(formData, "country_code", 8);
+  const whatsappTyped = text(formData, "whatsapp", 30);
+  const whatsappRaw = /^\+\d{1,4}$/.test(dialCode) ? joinPhone(dialCode, whatsappTyped) : whatsappTyped.replace(/[\s()-]/g, "");
   const email = text(formData, "email", 200);
   const address = text(formData, "address", 400);
   const city = text(formData, "city", 100);
   const postalCode = text(formData, "postal_code", 20);
   if (name.length < 2) fail("Please enter your name.");
-  if (!/^\+[1-9]\d{7,14}$/.test(whatsappRaw)) fail("Enter your WhatsApp number with country code, like +91 98765 43210.");
+  if (!/^\+[1-9]\d{7,14}$/.test(whatsappRaw)) fail("That WhatsApp number doesn't look right. Pick your country and type your number without the code.");
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail("Please enter a valid email address. We send your order details and payment receipt there.");
   if (address.length < 5 || !city || !postalCode) fail("Please fill in your full delivery address.");
 
