@@ -25,6 +25,8 @@ export const STORE = {
     businessName: "Trio Store",
     address: "Kerala, India",
     email: "triostoreindia@gmail.com",
+    // GST registration number, printed on receipts. Leave empty until you have one.
+    gstin: "",
     phone: "+91 75111 18549",
     // WhatsApp number for customers to message, digits only with country code (example: 919876543210). Empty = hidden.
     whatsappDigits: "917511118549",

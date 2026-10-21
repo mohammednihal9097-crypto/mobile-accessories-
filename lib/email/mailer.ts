@@ -1,7 +1,7 @@
 import "server-only";
 import nodemailer from "nodemailer";
 import { STORE } from "@/lib/config";
-import { emailConfigured as resendConfigured, sendEmail as sendViaResend, type EmailResult } from "./resend";
+import { emailConfigured as resendConfigured, sendEmail as sendViaResend, type EmailAttachment, type EmailResult } from "./resend";
 
 // Sends order emails. The first of these that is set up (Vercel > Environment Variables) is used:
 //   1. Any SMTP service, e.g. Brevo:  SMTP_HOST, SMTP_PORT (default 587), SMTP_USER, SMTP_PASSWORD, EMAIL_FROM
@@ -29,9 +29,9 @@ export function emailConfigured(): boolean {
   return smtpConfig() !== null || resendConfigured();
 }
 
-export async function sendEmail(to: string, subject: string, text: string): Promise<EmailResult> {
+export async function sendEmail(to: string, subject: string, text: string, attachments: EmailAttachment[] = []): Promise<EmailResult> {
   const c = smtpConfig();
-  if (!c) return sendViaResend(to, subject, text);
+  if (!c) return sendViaResend(to, subject, text, attachments);
   try {
     const transport = nodemailer.createTransport({
       host: c.host,
@@ -41,7 +41,10 @@ export async function sendEmail(to: string, subject: string, text: string): Prom
       connectionTimeout: 10000,
       socketTimeout: 12000,
     });
-    await transport.sendMail({ from: c.from, to, subject, text });
+    await transport.sendMail({
+      from: c.from, to, subject, text,
+      attachments: attachments.map((a) => ({ filename: a.filename, content: Buffer.from(a.content), contentType: "application/pdf" })),
+    });
     return { ok: true };
   } catch (e) {
     return { ok: false, error: `SMTP: ${e instanceof Error ? e.message : "send failed"}`.slice(0, 300) };

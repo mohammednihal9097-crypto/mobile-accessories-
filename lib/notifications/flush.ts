@@ -2,6 +2,7 @@ import "server-only";
 import { siteUrl } from "@/lib/bot/data";
 import { formatMoney, STORE } from "@/lib/config";
 import { renderAdminEmail } from "@/lib/email/admin-order";
+import { buildPaymentReceipt } from "@/lib/email/receipt";
 import { renderCustomerEmail } from "@/lib/email/customer-order";
 import { emailConfigured, sendEmail } from "@/lib/email/mailer";
 import { createSecretClient } from "@/lib/supabase/admin";
@@ -33,7 +34,8 @@ async function flushChannel(channel: Channel, limit: number): Promise<FlushResul
         : renderCustomerEmail(m.template, m.params, {
             formatMoney, orderLink: m.order_link, storeName: STORE.name, supportEmail: STORE.legal.email,
           });
-      r = mail ? await sendEmail(m.to, mail.subject, mail.text) : { ok: false, error: `no email for template ${m.template}` };
+      const pdf = mail && m.template === "payment_received" ? await buildPaymentReceipt(m.order_id) : null;
+      r = mail ? await sendEmail(m.to, mail.subject, mail.text, pdf ? [pdf] : []) : { ok: false, error: `no email for template ${m.template}` };
     } else {
       r = await sendTemplate(m.to, m.template, m.language, m.body_params);
     }
