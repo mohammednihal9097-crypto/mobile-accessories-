@@ -52,7 +52,7 @@ export async function placeOrder(formData: FormData) {
   const postalCode = text(formData, "postal_code", 20);
   if (name.length < 2) fail("Please enter your name.");
   if (!/^\+[1-9]\d{7,14}$/.test(whatsappRaw)) fail("Enter your WhatsApp number with country code, like +91 98765 43210.");
-  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail("That email address doesn't look right.");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail("Please enter a valid email address. We send your order details and payment receipt there.");
   if (address.length < 5 || !city || !postalCode) fail("Please fill in your full delivery address.");
 
   // If the customer arrived through a signed WhatsApp link, the number must be the one in the link.

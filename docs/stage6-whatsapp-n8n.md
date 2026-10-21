@@ -65,8 +65,8 @@ Fill the Stage 6 section of `.env.example`. Generate long random strings for the
 
    | Name | Text (copy exactly) | What fills the variables |
    |---|---|---|
-   | `order_received` | Hi {{1}}, thank you for your order {{2}}. Items: {{3}}. Total: {{4}}. Delivering to: {{5}}. We will confirm once your payment is verified. View your order: {{6}} | name, order number, items, total, address, private order link |
-   | `payment_received` | Hi {{1}}, we received your payment for order {{2}}. Receipt - items: {{3}}. Amount paid: {{4}}. Payment reference: {{5}}. We will pack your order soon. View your order: {{6}} | name, order number, items, total, payment reference, order link |
+   | `order_received` | Hi {{1}}, thank you for your order {{2}}. Items: {{3}}. Total: {{4}}. Delivering to: {{5}}. We will confirm once your payment is verified. View your order: {{6}} | name, order number, item names, quantities, unit prices and line totals, total, address, private order link |
+   | `payment_received` | Hi {{1}}, we received your payment for order {{2}}. Receipt - items: {{3}}. Amount paid: {{4}}. Payment reference: {{5}}. We will pack your order soon. View your order: {{6}} | name, order number, item names, quantities, unit prices and line totals, total, payment reference, order link |
    | `order_processing` | Hi {{1}}, we are packing your order {{2}}. | name, order number |
    | `order_shipped` | Hi {{1}}, your order {{2}} has been shipped. Courier: {{3}}. Tracking number: {{4}}. Track it here: {{5}} | name, order number, courier, tracking number, tracking link (or order link) |
    | `order_delivered` | Hi {{1}}, your order {{2}} was delivered. Thank you for shopping with us. | name, order number |
@@ -76,8 +76,8 @@ Fill the Stage 6 section of `.env.example`. Generate long random strings for the
 
    | Name | Text (copy exactly) | What fills the variables |
    |---|---|---|
-   | `admin_new_order` | New order {{1}} from {{2}} ({{3}}). Items: {{4}}. Total: {{5}}. Deliver to: {{6}}. Status: waiting for payment. | order number, customer name, customer WhatsApp, items, total, address |
-   | `admin_order_paid` | Order {{1}} is PAID: {{2}} from {{3}}. Items: {{4}}. Deliver to: {{5}}. Please pack and ship. | order number, total, customer name, items, address |
+   | `admin_new_order` | New order {{1}} from {{2}} ({{3}}). Items: {{4}}. Total: {{5}}. Deliver to: {{6}}. Status: waiting for payment. | order number, customer name, customer WhatsApp, item names, quantities, unit prices and line totals, total, address |
+   | `admin_order_paid` | Order {{1}} is PAID: {{2}} from {{3}}. Items: {{4}}. Deliver to: {{5}}. Please pack and ship. | order number, total, customer name, item names, quantities, unit prices and line totals, address |
    | `admin_order_cancelled` | Order {{1}} from {{2}} was cancelled. | order number, customer name |
 
    The website cleans every value: line breaks and tabs become " | ", long space runs are collapsed, and empty values become "-". Meta's current docs do not spell out these formatting limits, so this is a safe default. Message bodies are limited to 1024 characters, and a very long item list is cut to 900 characters.
@@ -92,7 +92,7 @@ Fill the Stage 6 section of `.env.example`. Generate long random strings for the
 **Be aware:** the three workflow files are drafts I wrote by hand, validated as JSON only. I could not open them in n8n, so a node setting may need a small adjustment in n8n's editor. Run each workflow once manually and check the result. The Cloud API address uses version `v25.0`, which is what Meta's current examples show; if Meta retires it, change the number in the two Graph API nodes.
 
 ### E. Admin numbers and shipping details (done inside the shop admin)
-1. Run [0005_whatsapp_receipts.sql](../supabase/migrations/0005_whatsapp_receipts.sql) in the Supabase SQL Editor (after 0001 to 0004).
+1. Run [0005_whatsapp_receipts.sql](../supabase/migrations/0005_whatsapp_receipts.sql) and then [0006_whatsapp_item_prices.sql](../supabase/migrations/0006_whatsapp_item_prices.sql) in the Supabase SQL Editor (after 0001 to 0004). Migration 0006 adds each product's quantity, unit price and line total to the item details in WhatsApp alerts and receipts; it does not change the approved template variables.
 2. In **Admin > WhatsApp alerts**, add the WhatsApp number(s) that should receive order alerts. Use the full international format, for example +91 98765 43210. This is the only place admin numbers are stored.
 3. When you mark an order **shipped**, the admin order page asks for the courier and tracking number (and an optional tracking link). They are saved on the order and sent to the customer in the shipped message. At least the courier or the tracking number is required.
 

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { placeOrder } from "@/app/checkout/actions";
 import { useCatalog } from "./CatalogProvider";
 import { OrderSummary, useCartDetails } from "./CartView";
 import PaymentNotice from "./PaymentNotice";
 import { useWaLink } from "@/lib/wa-link";
+import { STORE } from "@/lib/config";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5";
 
@@ -26,6 +28,13 @@ export default function CheckoutForm() {
   }
 
   const cart = JSON.stringify(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
+  const whatsappMessage = [
+    `Hi ${STORE.name}, I'd like to ask about this cart:`,
+    ...items.map(({ product, quantity }) => `- ${product.name} x ${quantity}`),
+  ].join("\n");
+  const whatsappHref = /^\d{8,15}$/.test(STORE.legal.whatsappDigits)
+    ? `https://wa.me/${STORE.legal.whatsappDigits}?text=${encodeURIComponent(whatsappMessage)}`
+    : null;
 
   return (
     <form action={placeOrder} onSubmit={() => setBusy(true)} className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-start">
@@ -55,7 +64,7 @@ export default function CheckoutForm() {
             />
             <span className="text-xs text-slate-500">With country code. We will send order updates here.</span>
           </label>
-          <label className="block text-sm">Email (optional)<input name="email" type="email" className={field} autoComplete="email" /></label>
+          <label className="block text-sm">Email (for your order details and payment receipt)<input name="email" type="email" required className={field} autoComplete="email" /></label>
         </fieldset>
 
         <fieldset className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
@@ -78,6 +87,18 @@ export default function CheckoutForm() {
         >
           {isSample ? "Place order (unavailable in demo mode)" : busy ? "Placing order…" : "Place order"}
         </button>
+        {whatsappHref && (
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white py-3 font-semibold text-slate-800 hover:bg-slate-50"
+          >
+            <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            Ask about this cart on WhatsApp
+          </a>
+        )}
+        {whatsappHref && <p className="text-center text-xs text-slate-500">Opens WhatsApp with your cart items only. Your contact and delivery details are not shared.</p>}
         <p className="text-center text-xs text-slate-500">Placing the order reserves your items. You pay on the next screen once payments are switched on.</p>
       </div>
     </form>

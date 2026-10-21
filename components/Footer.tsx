@@ -55,6 +55,27 @@ export default function Footer() {
             {LEGAL.map((l) => <li key={l.href}><Link href={l.href} className="hover:text-brand-700">{l.label}</Link></li>)}
           </ul>
         </nav>
+        {(STORE.social.facebookUrl || STORE.social.instagramUrl) && (
+          <nav aria-label="Social media">
+            <p className="text-sm font-semibold text-slate-900">Follow us</p>
+            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+              {[
+                { label: "Facebook", url: STORE.social.facebookUrl },
+                { label: "Instagram", url: STORE.social.instagramUrl },
+              ].filter(({ url }) => {
+                try {
+                  return new URL(url).protocol === "https:";
+                } catch {
+                  return false;
+                }
+              }).map(({ label, url }) => (
+                <li key={label}>
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="hover:text-brand-700">{label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </div>
       <div className="border-t border-slate-200">
         <p className="mx-auto max-w-6xl px-4 py-4 text-xs text-slate-500 sm:px-6 lg:px-8">© {STORE.name}. All rights reserved.</p>

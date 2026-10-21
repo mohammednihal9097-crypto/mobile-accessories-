@@ -36,6 +36,8 @@ The token on Meta's API Setup page expires within hours, so don't use it for the
 ## Templates
 Customer and admin receipts are **template messages**. Create the 9 templates in Meta with the exact texts in `docs/stage6-whatsapp-n8n.md` (section C, step 7). Meta must approve each one. Replies to a customer who just messaged you are plain text and need no template.
 
+To enable order alerts and detailed receipts, run migrations `0005_whatsapp_receipts.sql` and `0006_whatsapp_item_prices.sql` after migrations `0001` to `0004`. Then add the admin recipient number(s) in **Admin > WhatsApp alerts**. New-order and paid-order alerts go to those admin numbers; customers receive an order confirmation when they place an order and an itemized payment receipt after payment is verified.
+
 ## Testing with Meta's free test number
 - You can only message phone numbers you added as **test recipients** in API Setup.
 - Template messages to other numbers fail with a clear Meta error. **Admin > WhatsApp alerts** shows each message's status and the error.

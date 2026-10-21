@@ -5,6 +5,10 @@ export const STORE = {
   tagline: "Charge forward",
   currency: "INR",
   locale: "en-IN",
+  social: {
+    facebookUrl: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "",
+    instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "",
+  },
   // Delivery rules. The fee numbers are PLACEHOLDERS until you confirm them. Amounts are in the smallest
   // currency unit (paise for INR) to avoid rounding mistakes.
   shipping: {

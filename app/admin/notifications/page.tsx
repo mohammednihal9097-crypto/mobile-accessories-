@@ -85,7 +85,7 @@ export default async function NotificationsPage({ searchParams }: PageProps<"/ad
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-slate-500">&quot;pending&quot; means waiting for n8n to pick it up (it checks every minute). &quot;failed&quot; shows why WhatsApp refused it.</p>
+        <p className="text-xs text-slate-500">&quot;pending&quot; means waiting for the website or n8n to send it. &quot;failed&quot; shows why WhatsApp refused it.</p>
       </section>
     </div>
   );

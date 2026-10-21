@@ -22,7 +22,7 @@ Nothing has been published, deployed or connected to a paid service. Everything 
 
 These need your real Supabase project and accounts, and I did not place test orders in your database.
 
-1. **Placing an order end to end.** Run migrations 0002 and 0003 first. Then add a product with stock 2 and order it from the shop. Check that stock drops and the order shows in **Admin > Orders**.
+1. **Placing an order end to end.** Run migrations 0001 to 0006 in order. Then add a product with stock 2 and order it from the shop. Check that stock drops and the order shows in **Admin > Orders**.
 2. **Double-click safety.** Press "Place order" twice quickly: you should get one order, not two.
 3. **Last item race.** With stock 1, open the checkout in two browser windows and submit both. Exactly one should succeed and the other should say there isn't enough stock.
 4. **Cancel returns stock once.** Cancel an order in admin: stock goes back up. Cancelling again must not add it twice (the button disappears; the database also refuses).
@@ -51,10 +51,11 @@ Selling country and currency, payment provider, delivery area and fees, cash on 
 ## 5. Launch checklist
 
 **Accounts and setup**
-- [ ] Supabase: migrations 0001, 0002, 0003 and 0004 run in order; admin user created and added to `admin_users`; "Allow new users to sign up" turned **off**
+- [ ] Supabase: migrations 0001 to 0006 run in order; admin user created and added to `admin_users`; "Allow new users to sign up" turned **off**
 - [ ] Supabase: upgrade the plan if you need backups; note the project region
-- [ ] Meta Business verified, WhatsApp number added, six templates approved (`docs/stage6-whatsapp-n8n.md`)
-- [ ] n8n running on https with the three workflows imported, credentials set, activated
+- [ ] Meta Business verified, WhatsApp number added, nine templates approved (`docs/stage6-whatsapp-n8n.md`)
+- [ ] Admin recipient numbers added in **Admin > WhatsApp alerts**; test order, itemized admin alerts and customer payment receipts end to end
+- [ ] Optional: n8n running on https with the three workflows imported, credentials set, activated
 - [ ] Payment provider chosen, account verified, test mode working (Stage 5 work on my side once you choose)
 - [ ] Sarvam only if you want it (`docs/stage7-sarvam.md`)
 
