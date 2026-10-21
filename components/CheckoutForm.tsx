@@ -10,7 +10,8 @@ import { useWaLink } from "@/lib/wa-link";
 import { STORE } from "@/lib/config";
 import { COUNTRIES, DEFAULT_DIAL } from "@/lib/country-codes";
 
-const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5";
+const box = "rounded-xl border border-slate-300 bg-white px-3 py-2.5";
+const field = `w-full ${box}`;
 
 /** One key per page load: pressing "Place order" twice can never create two orders. */
 function IdempotencyKey() {
@@ -63,11 +64,11 @@ export default function CheckoutForm() {
               <input name="whatsapp" required type="tel" className={field} autoComplete="tel" defaultValue={signedWhatsapp.wa} readOnly />
             ) : (
               <span className="flex gap-2">
-                <select name="country_code" defaultValue={DEFAULT_DIAL} aria-label="Country code" className={`${field} w-44 shrink-0`}>
-                  {COUNTRIES.map((c) => <option key={`${c.name}`} value={c.dial}>{c.name} ({c.dial})</option>)}
+                <select name="country_code" defaultValue={DEFAULT_DIAL} aria-label="Country code" className={`${box} w-24 shrink-0 px-2`}>
+                  {COUNTRIES.map((c) => <option key={`${c.name}`} value={c.dial}>{c.dial} {c.name}</option>)}
                 </select>
                 <input
-                  name="whatsapp" required type="tel" inputMode="tel" className={field} autoComplete="tel-national"
+                  name="whatsapp" required type="tel" inputMode="tel" className={`${box} min-w-0 flex-1`} autoComplete="tel-national"
                   placeholder="98765 43210" pattern="[0-9 ()\-+]{5,20}" title="Your number without the country code"
                 />
               </span>
