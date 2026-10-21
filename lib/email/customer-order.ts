@@ -24,7 +24,7 @@ export function renderCustomerEmail(template: TemplateName, p: NotificationParam
       return {
         subject: `Payment receipt for order ${order}`,
         text: [
-          `Hi ${name},`, "", "We received your payment. This email is your receipt.", "", summary,
+          `Hi ${name},`, "", "Thank you for your purchase! We received your payment. This email is your receipt.", "", summary,
           `Amount paid: ${total}`, `Payment reference: ${p.payment_ref?.trim() || "confirmed by the store"}`, track, sign,
         ].join("\n"),
       };
@@ -34,7 +34,7 @@ export function renderCustomerEmail(template: TemplateName, p: NotificationParam
       return {
         subject: `Your order ${order} has shipped`,
         text: [
-          `Hi ${name},`, "", `Order ${order} is on its way.`,
+          `Hi ${name},`, "", `Thank you for your purchase! Order ${order} is on its way.`, "", summary, "",
           `Courier: ${p.courier?.trim() || "our courier partner"}`, `Tracking number: ${p.tracking_number?.trim() || "not provided"}`,
           ...(p.tracking_url ? [`Track it here: ${p.tracking_url}`] : []), track, sign,
         ].join("\n"),

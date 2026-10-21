@@ -34,3 +34,13 @@ test("shipping email carries courier and tracking", () => {
 test("admin templates are not rendered as customer emails", () => {
   assert.equal(renderCustomerEmail("admin_new_order", order, ctx), null);
 });
+
+test("receipt and shipping emails thank the customer; shipping repeats the products", () => {
+  const paid = renderCustomerEmail("payment_received", order, ctx)!;
+  assert.match(paid.text, /Thank you for your purchase/);
+  assert.match(paid.text, /  - Case x2/);
+  const shipped = renderCustomerEmail("order_shipped", order, ctx)!;
+  assert.match(shipped.text, /Thank you for your purchase/);
+  assert.match(shipped.text, /  - Charger x1/);
+  assert.match(shipped.text, /Track it here: https:\/\/track\.example\/DL123/);
+});
