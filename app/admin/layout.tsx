@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { BellRing, LayoutDashboard, LogOut, MessageCircle, Package, ShoppingCart, Tags } from "lucide-react";
+import { BellRing, FileSpreadsheet, LayoutDashboard, LogOut, MessageCircle, Package, ShoppingCart, Tags } from "lucide-react";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { logout } from "../login/actions";
 
@@ -8,6 +8,7 @@ export const metadata = { title: "Admin", robots: { index: false, follow: false 
 
 const NAV = [
   { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
+  { href: "/admin/analytics", label: "Revenue & Datasheet", Icon: FileSpreadsheet },
   { href: "/admin/orders", label: "Orders", Icon: ShoppingCart },
   { href: "/admin/products", label: "Products", Icon: Package },
   { href: "/admin/handoffs", label: "WhatsApp chats", Icon: MessageCircle },
