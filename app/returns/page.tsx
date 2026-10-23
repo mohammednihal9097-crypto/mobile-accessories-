@@ -10,7 +10,7 @@ export default function ReturnsPage() {
     <PolicyPage title="Returns and refunds">
       <h2>Cancelling an order</h2>
       <ul>
-        <li>You can ask us to cancel an order before it is shipped. Message us on WhatsApp or use the <Link href="/contact">contact page</Link>.</li>
+        <li>You can ask us to cancel an order before it is shipped. Contact us via email or use the <Link href="/contact">contact page</Link>.</li>
         <li>Once an order has shipped, it can no longer be cancelled, but you can return it as described below.</li>
         <li>If you cancel a paid order, we refund the full amount.</li>
       </ul>

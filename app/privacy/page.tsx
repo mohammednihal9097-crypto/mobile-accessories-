@@ -24,7 +24,7 @@ export default function PrivacyPage() {
       <h2>Why we use it</h2>
       <ul>
         <li>To process, deliver and support your order.</li>
-        <li>To send you your receipt and delivery updates on WhatsApp.</li>
+        <li>To send you your receipt and delivery updates via email.</li>
         <li>To prevent fraud and keep the shop secure.</li>
         <li>To meet legal, tax and accounting duties.</li>
       </ul>

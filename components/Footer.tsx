@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle, ShieldCheck, Truck } from "lucide-react";
+import { Mail, ShieldCheck, Truck } from "lucide-react";
 import { STORE } from "@/lib/config";
 import { useCatalog } from "./CatalogProvider";
 import Logo from "./Logo";
@@ -28,7 +28,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-600">
             <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-brand-600" aria-hidden="true" />Fit listed for every product</li>
             <li className="flex items-center gap-2"><Truck className="h-4 w-4 text-brand-600" aria-hidden="true" />{STORE.shipping.areaNote}</li>
-            <li className="flex items-center gap-2"><MessageCircle className="h-4 w-4 text-brand-600" aria-hidden="true" />Order updates on WhatsApp</li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-brand-600" aria-hidden="true" />Order updates via email</li>
           </ul>
         </div>
 

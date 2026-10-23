@@ -28,7 +28,7 @@ export default function ShippingPage() {
 
       <h2>Tracking your order</h2>
       <ul>
-        <li>When your order ships, we send the courier name and tracking number to you on WhatsApp.</li>
+        <li>When your order ships, we send the courier name and tracking number to you via email.</li>
         <li>You can also check your order any time on the <Link href="/track">track order</Link> page with your order number and WhatsApp number.</li>
       </ul>
 

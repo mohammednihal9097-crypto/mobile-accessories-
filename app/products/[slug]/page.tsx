@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { MessageCircle, ShieldCheck, Truck } from "lucide-react";
+import { Mail, ShieldCheck, Truck } from "lucide-react";
 import { formatMoney, STORE } from "@/lib/config";
 import { getCatalog } from "@/lib/catalog";
 import AddToCartButton from "@/components/AddToCartButton";
@@ -58,7 +58,7 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
           <ul className="grid gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 sm:grid-cols-3 sm:gap-3">
             <li className="flex items-center gap-2"><Truck className="h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />{STORE.shipping.areaNote}</li>
             <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />Fit listed by model</li>
-            <li className="flex items-center gap-2"><MessageCircle className="h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />WhatsApp updates</li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />Email updates</li>
           </ul>
         </div>
       </div>

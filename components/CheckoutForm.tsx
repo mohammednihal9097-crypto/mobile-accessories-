@@ -73,9 +73,9 @@ export default function CheckoutForm() {
                 />
               </span>
             )}
-            <span className="text-xs text-slate-500">Choose your country, then type your number without the code. We will send order updates here.</span>
+            <span className="text-xs text-slate-500">Choose your country, then type your number without the code. Used by the courier for delivery.</span>
           </label>
-          <label className="block text-sm">Email (for your order details and payment receipt)<input name="email" type="email" required className={field} autoComplete="email" /></label>
+          <label className="block text-sm">Email (for order confirmation, updates and receipt)<input name="email" type="email" required className={field} autoComplete="email" /></label>
         </fieldset>
 
         <fieldset className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">

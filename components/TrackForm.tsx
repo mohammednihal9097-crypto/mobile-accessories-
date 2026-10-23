@@ -36,7 +36,7 @@ export default function TrackForm() {
           <label className="block text-sm font-medium">Order number
             <input name="order_number" required placeholder="ORD-1001" className={`${field} mt-1 font-normal`} autoComplete="off" />
           </label>
-          <label className="block text-sm font-medium">WhatsApp number used at checkout
+          <label className="block text-sm font-medium">Phone number used at checkout
             <input name="whatsapp" required type="tel" placeholder="+91 98765 43210" className={`${field} mt-1 font-normal`} autoComplete="tel" />
           </label>
         </div>

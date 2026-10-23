@@ -9,7 +9,7 @@ export default function TrackPage() {
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Track order" }]} />
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Track your order</h1>
-        <p className="text-slate-600">Enter your order number and the WhatsApp number you used when you ordered.</p>
+        <p className="text-slate-600">Enter your order number and the phone number you used when you ordered.</p>
       </header>
       <TrackForm />
     </div>

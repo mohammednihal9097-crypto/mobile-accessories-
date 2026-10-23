@@ -38,12 +38,12 @@ export default function Header() {
           <Link
             href="/cart"
             aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
-            className="relative inline-flex h-10 items-center gap-2 rounded-xl bg-brand-600 px-3 text-white shadow-sm shadow-brand-900/20 transition hover:bg-brand-700 sm:px-4"
+            className="btn-press relative inline-flex h-10 items-center gap-2 rounded-xl bg-brand-600 px-3 text-white shadow-sm shadow-brand-900/20 transition hover:bg-brand-700 hover:shadow-md sm:px-4"
           >
-            <ShoppingBag className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+            <ShoppingBag className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} aria-hidden="true" />
             <span className="hidden sm:inline">Cart</span>
             {count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[11px] font-semibold text-brand-700 ring-2 ring-brand-600">
+              <span className="animate-badge-pop absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[11px] font-semibold text-brand-700 shadow-sm ring-2 ring-brand-600">
                 {count > 99 ? "99+" : count}
               </span>
             )}
