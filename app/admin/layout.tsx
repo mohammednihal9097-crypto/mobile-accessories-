@@ -13,6 +13,7 @@ import {
   Tag,
   Settings,
   ShieldCheck,
+  Instagram,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { logout } from "../login/actions";
@@ -29,6 +30,7 @@ const NAV = [
   { href: "/admin/handoffs", label: "WhatsApp chats", Icon: MessageCircle },
   { href: "/admin/notifications", label: "WhatsApp alerts", Icon: BellRing },
   { href: "/admin/catalogue", label: "Categories & phones", Icon: Tags },
+  { href: "/admin/instagram", label: "Instagram", Icon: Instagram },
   { href: "/admin/settings", label: "Settings", Icon: Settings },
   { href: "/admin/admins", label: "Admin team", Icon: ShieldCheck },
 ];
