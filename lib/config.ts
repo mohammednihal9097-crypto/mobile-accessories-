@@ -1,5 +1,7 @@
 // Store-wide settings. Change them here; nothing else in the app hard-codes these.
 // Decided: selling in India, INR, delivery across India. Still to confirm: delivery fees, GST.
+export const STORE_NAME = "Trio Store";
+
 export const STORE = {
   name: "Trio Store",
   tagline: "Charge forward",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download, FileSpreadsheet, TrendingUp, ShoppingBag, CheckCircle2, Clock, Calendar, ArrowUpRight } from "lucide-react";
+import { Download, FileSpreadsheet, TrendingUp, ShoppingBag, CheckCircle2, Clock, Calendar, ArrowUpRight, BarChart3, Package } from "lucide-react";
 import { formatMoney } from "@/lib/config";
 import { requireAdmin } from "@/lib/supabase/auth";
 
@@ -20,10 +20,15 @@ type DailyAggregate = {
 export default async function AnalyticsPage() {
   const { supabase } = await requireAdmin();
 
-  const { data: orders } = await supabase
-    .from("orders")
-    .select("id, order_number, status, total_minor, currency, created_at, customer_name")
-    .order("created_at", { ascending: false });
+  const [{ data: orders }, { data: orderItems }] = await Promise.all([
+    supabase
+      .from("orders")
+      .select("id, order_number, status, total_minor, currency, created_at, customer_name")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("order_items")
+      .select("order_id, product_name, unit_price_minor, quantity"),
+  ]);
 
   const allOrders = orders ?? [];
 
@@ -81,6 +86,26 @@ export default async function AnalyticsPage() {
 
   const averageOrderValue = paidOrdersCount > 0 ? Math.round(totalRevenueMinor / paidOrdersCount) : 0;
 
+  // Sales by Product aggregation
+  const paidOrderIds = new Set(allOrders.filter((o) => PAID_STATUSES.has(o.status)).map((o) => o.id));
+  const productSalesMap = new Map<string, { name: string; unitsSold: number; revenueMinor: number; orderCount: number }>();
+
+  for (const item of (orderItems ?? [])) {
+    if (!paidOrderIds.has(item.order_id)) continue;
+    const current = productSalesMap.get(item.product_name) ?? {
+      name: item.product_name,
+      unitsSold: 0,
+      revenueMinor: 0,
+      orderCount: 0,
+    };
+    current.unitsSold += item.quantity;
+    current.revenueMinor += item.unit_price_minor * item.quantity;
+    current.orderCount += 1;
+    productSalesMap.set(item.product_name, current);
+  }
+
+  const productSalesList = Array.from(productSalesMap.values()).sort((a, b) => b.revenueMinor - a.revenueMinor);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -88,7 +113,7 @@ export default async function AnalyticsPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Revenue &amp; Order Datasheet</h1>
           <p className="mt-1 text-sm text-slate-600">
-            Day-by-day sales reports, revenue metrics, and downloadable datasheets.
+            Day-by-day sales reports, product-level analytics, and downloadable datasheets.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -159,6 +184,63 @@ export default async function AnalyticsPage() {
           </div>
           <p className="mt-3 text-2xl font-bold tracking-tight text-slate-900">{formatMoney(pendingRevenueMinor)}</p>
           <p className="mt-1 text-xs text-slate-500">{pendingOrdersCount} orders awaiting payment</p>
+        </div>
+      </div>
+
+      {/* Feature 4: Sales by Product Report */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+            <BarChart3 className="h-5 w-5 text-brand-600" aria-hidden="true" />
+            Sales by Product Report
+          </h2>
+          <span className="text-xs text-slate-500">
+            {productSalesList.length} product{productSalesList.length === 1 ? "" : "s"} sold
+          </span>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-600">
+                <tr>
+                  <th className="p-3.5">Product</th>
+                  <th className="p-3.5">Units Sold</th>
+                  <th className="p-3.5">Orders Count</th>
+                  <th className="p-3.5">Total Revenue</th>
+                  <th className="p-3.5">Avg Selling Price</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {productSalesList.map((p) => {
+                  const avgPrice = p.unitsSold > 0 ? Math.round(p.revenueMinor / p.unitsSold) : 0;
+                  return (
+                    <tr key={p.name} className="transition-colors hover:bg-slate-50/60">
+                      <td className="p-3.5 font-medium text-slate-900">
+                        <div className="flex items-center gap-2">
+                          <Package className="h-4 w-4 text-slate-400" />
+                          <span>{p.name}</span>
+                        </div>
+                      </td>
+                      <td className="p-3.5 font-semibold text-slate-800">
+                        {p.unitsSold}
+                      </td>
+                      <td className="p-3.5 text-slate-600">{p.orderCount}</td>
+                      <td className="p-3.5 font-semibold text-green-700">{formatMoney(p.revenueMinor)}</td>
+                      <td className="p-3.5 text-slate-600">{formatMoney(avgPrice)}</td>
+                    </tr>
+                  );
+                })}
+                {productSalesList.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-sm text-slate-500">
+                      No product sales recorded yet. Once paid orders come in, best-selling products will be ranked here.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

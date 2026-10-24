@@ -165,6 +165,24 @@ export async function deleteCategory(formData: FormData) {
   redirect("/admin/catalogue?saved=1");
 }
 
+export async function updateCategory(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const id = text(formData, "id");
+  const name = text(formData, "name");
+  const slug = slugify(text(formData, "slug") || name);
+  if (!id) fail("/admin/catalogue", "Category ID is required.");
+  if (!name || !slug) fail("/admin/catalogue", "Category name is required.");
+  const { error } = await supabase.from("categories").update({
+    name,
+    slug,
+    description: text(formData, "description") || null,
+    icon: text(formData, "icon") || null,
+  }).eq("id", id);
+  if (error) fail("/admin/catalogue", error.message.includes("duplicate") ? "That category slug already exists." : error.message);
+  refresh("/admin/catalogue");
+  redirect("/admin/catalogue?saved=1");
+}
+
 export async function addPhoneModel(formData: FormData) {
   const { supabase } = await requireAdmin();
   const brand = text(formData, "brand");
@@ -184,7 +202,48 @@ export async function deletePhoneModel(formData: FormData) {
   redirect("/admin/catalogue?saved=1");
 }
 
+export async function updatePhoneModel(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const id = text(formData, "id");
+  const brand = text(formData, "brand");
+  const name = text(formData, "name");
+  if (!id) fail("/admin/catalogue", "Phone model ID is required.");
+  if (!brand || !name) fail("/admin/catalogue", "Brand and model are both required.");
+  const { error } = await supabase.from("phone_models").update({ brand, name }).eq("id", id);
+  if (error) fail("/admin/catalogue", error.message.includes("duplicate") ? "That phone model already exists." : error.message);
+  refresh("/admin/catalogue");
+  redirect("/admin/catalogue?saved=1");
+}
+
 // ---------------------------------------------------------------- orders
+
+export async function bulkSetOrderStatus(formData: FormData) {
+  const { userId } = await requireAdmin();
+  const status = text(formData, "status");
+  if (!ORDER_STATUSES.includes(status)) redirect("/admin/orders?error=Unknown+status");
+  const ids = formData.getAll("order_id").map(String).filter(Boolean);
+  if (ids.length === 0) redirect("/admin/orders?error=No+orders+selected");
+
+  const sc = createSecretClient();
+  const results = await Promise.all(
+    ids.map((orderId) =>
+      sc.rpc("set_order_status", {
+        p_order_id: orderId,
+        p_new: status,
+        p_actor: `admin:${userId}`,
+        p_note: `Bulk update to ${status}`,
+        p_courier: null,
+        p_tracking: null,
+        p_tracking_url: null,
+      })
+    )
+  );
+  const errs = results.filter((r) => r.error).map((r) => r.error!.message);
+  if (status === "cancelled") updateTag("catalog");
+  revalidatePath("/admin/orders");
+  if (errs.length > 0) redirect(`/admin/orders?error=${encodeURIComponent(`${errs.length} order(s) could not be updated`)}`);
+  redirect(`/admin/orders?saved=1`);
+}
 
 export async function setOrderStatus(formData: FormData) {
   const { userId } = await requireAdmin();
@@ -264,4 +323,131 @@ export async function checkPayment(formData: FormData) {
   if (result === "already-paid") redirect(`${back}?nochange=1`);
   if (result === "error") fail(back, "Could not reach Razorpay just now. Try again in a minute.");
   fail(back, result === "not-paid" ? "Razorpay does not show a completed payment for this order yet." : "This order has no Razorpay payment link to check.");
+}
+
+// ---------------------------------------------------------------- coupons
+
+export async function createCoupon(formData: FormData) {
+  await requireAdmin();
+  const code = text(formData, "code").toUpperCase();
+  const discountType = text(formData, "discount_type");
+  const rawValue = text(formData, "discount_value");
+  const rawMinOrder = text(formData, "min_order");
+  const rawExpiry = text(formData, "expires_at");
+
+  if (!code) fail("/admin/coupons", "Coupon code is required.");
+  if (discountType !== "percent" && discountType !== "flat") fail("/admin/coupons", "Invalid discount type.");
+
+  let discountValue = 0;
+  if (discountType === "percent") {
+    const p = parseInt(rawValue, 10);
+    if (isNaN(p) || p <= 0 || p > 100) fail("/admin/coupons", "Percentage discount must be between 1 and 100.");
+    discountValue = p;
+  } else {
+    const minor = toMinor(rawValue);
+    if (!minor || minor <= 0) fail("/admin/coupons", "Enter a valid flat discount amount like 100 or 150.");
+    discountValue = minor;
+  }
+
+  const minOrderMinor = rawMinOrder ? toMinor(rawMinOrder) ?? 0 : 0;
+  const expiresAt = rawExpiry ? new Date(rawExpiry).toISOString() : null;
+
+  const { error } = await createSecretClient().from("coupons").insert({
+    code,
+    discount_type: discountType,
+    discount_value: discountValue,
+    min_order_minor: minOrderMinor,
+    expires_at: expiresAt,
+    is_active: true,
+  });
+
+  if (error) fail("/admin/coupons", error.message.includes("duplicate") ? "That coupon code already exists." : error.message);
+  revalidatePath("/admin/coupons");
+  redirect("/admin/coupons?saved=1");
+}
+
+export async function toggleCoupon(formData: FormData) {
+  await requireAdmin();
+  const id = text(formData, "id");
+  const active = formData.get("is_active") === "true";
+  const { error } = await createSecretClient().from("coupons").update({ is_active: !active }).eq("id", id);
+  if (error) fail("/admin/coupons", error.message);
+  revalidatePath("/admin/coupons");
+  redirect("/admin/coupons?saved=1");
+}
+
+export async function deleteCoupon(formData: FormData) {
+  await requireAdmin();
+  const id = text(formData, "id");
+  const { error } = await createSecretClient().from("coupons").delete().eq("id", id);
+  if (error) fail("/admin/coupons", error.message);
+  revalidatePath("/admin/coupons");
+  redirect("/admin/coupons?saved=1");
+}
+
+// ---------------------------------------------------------------- store settings
+
+export async function saveStoreSettings(formData: FormData) {
+  await requireAdmin();
+  const keys = [
+    "store_name",
+    "store_tagline",
+    "support_email",
+    "support_whatsapp",
+    "shipping_fee_inr",
+    "free_shipping_threshold_inr",
+    "gst_number",
+  ];
+
+  const sc = createSecretClient();
+  const rows = keys.map((key) => ({
+    key,
+    value: text(formData, key),
+    updated_at: new Date().toISOString(),
+  }));
+
+  const { error } = await sc.from("store_settings").upsert(rows, { onConflict: "key" });
+  if (error) fail("/admin/settings", error.message);
+  revalidatePath("/admin/settings");
+  refresh("/admin/settings");
+  redirect("/admin/settings?saved=1");
+}
+
+// ---------------------------------------------------------------- admin user management
+
+export async function addAdminUser(formData: FormData) {
+  await requireAdmin();
+  const email = text(formData, "email").toLowerCase();
+  if (!email || !email.includes("@")) fail("/admin/admins", "Valid email is required.");
+
+  const sc = createSecretClient();
+  const { data, error } = await sc.auth.admin.listUsers();
+  if (error || !data) fail("/admin/admins", "Could not query users list.");
+
+  const targetUser = data.users.find((u) => u.email?.toLowerCase() === email);
+  if (!targetUser) {
+    fail("/admin/admins", `User ${email} has not signed up yet. They must log in or sign up first before being granted admin rights.`);
+  }
+
+  const { error: insertErr } = await sc.from("admin_users").insert({ user_id: targetUser.id });
+  if (insertErr) {
+    fail("/admin/admins", insertErr.message.includes("duplicate") ? "That user is already an admin." : insertErr.message);
+  }
+
+  revalidatePath("/admin/admins");
+  redirect("/admin/admins?saved=1");
+}
+
+export async function removeAdminUser(formData: FormData) {
+  const { userId } = await requireAdmin();
+  const targetId = text(formData, "user_id");
+  if (!targetId) fail("/admin/admins", "User ID is required.");
+  if (targetId === userId) fail("/admin/admins", "You cannot revoke your own admin rights.");
+
+  const sc = createSecretClient();
+  const { error } = await sc.from("admin_users").delete().eq("user_id", targetId);
+  if (error) fail("/admin/admins", error.message);
+
+  revalidatePath("/admin/admins");
+  redirect("/admin/admins?saved=1");
 }
