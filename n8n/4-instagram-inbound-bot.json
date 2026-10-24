@@ -1,0 +1,131 @@
+{
+  "name": "Instagram: customer DMs -> store bot",
+  "nodes": [
+    {
+      "id": "e1f13b24-9b1c-43f1-a1b4-7d52a201b101",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -40
+      ],
+      "parameters": {
+        "content": "Instagram Auto-Reply Workflow\n\n1. Credentials:\n   - 'Header Auth' (name: x-api-key, value: N8N_INBOUND_SHARED_SECRET) for the Webhook node.\n   - 'Header Auth' (name: x-api-key, value: N8N_API_SHARED_SECRET) for 'Ask the store bot'.\n   - 'Header Auth' (name: Authorization, value: Bearer YOUR_PAGE_ACCESS_TOKEN) for 'Send Instagram DM'.\n\n2. Replace 'https://YOUR-SITE.example' with your real website address (e.g. https://triostore-india.vercel.app).\n\n3. Activate this workflow. Copy the Production URL and add it to your website's environment variables as N8N_INSTAGRAM_WEBHOOK_URL.\n\nAll intelligence (product recommendations, prices, coupons, tracking) is returned by /api/bot/instagram.",
+        "width": 580,
+        "height": 340
+      }
+    },
+    {
+      "id": "a2b3c4d5-e6f7-4890-a1b2-c3d4e5f6a7b8",
+      "name": "Verified Instagram Message",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        540,
+        200
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "instagram-inbound",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "7891234a-bcde-4f01-2345-6789abcdef01"
+    },
+    {
+      "id": "b3c4d5e6-f7a8-4901-b2c3-d4e5f6a7b8c9",
+      "name": "Prepare Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body;\nreturn [{ json: { senderId: b.senderId, text: b.text || '' } }];"
+      }
+    },
+    {
+      "id": "c4d5e6f7-a8b9-4012-c3d4-e5f6a7b8c9d0",
+      "name": "Ask the store bot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SITE.example/api/bot/instagram",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ senderId: $json.senderId, text: $json.text }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      }
+    },
+    {
+      "id": "d5e6f7a8-b9c0-4123-d4e5-f6a7b8c9d0e1",
+      "name": "Send Instagram DM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1260,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/me/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ recipient: { id: $json.senderId }, message: { text: $json.reply } }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Verified Instagram Message": {
+      "main": [
+        [
+          {
+            "node": "Prepare Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Message": {
+      "main": [
+        [
+          {
+            "node": "Ask the store bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask the store bot": {
+      "main": [
+        [
+          {
+            "node": "Send Instagram DM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

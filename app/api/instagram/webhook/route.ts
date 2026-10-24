@@ -60,6 +60,11 @@ export async function POST(request: Request) {
 
   const entries = body.entry ?? [];
 
+  // n8n forwarding configuration
+  const n8nUrl = process.env.N8N_INSTAGRAM_WEBHOOK_URL?.trim();
+  const n8nSecret = process.env.N8N_INBOUND_SHARED_SECRET?.trim();
+  const hasN8n = n8nUrl && !/REPLACE|your-|paste-/i.test(n8nUrl);
+
   for (const entry of entries) {
     for (const event of entry.messaging ?? []) {
       const senderId = event.sender?.id;
@@ -71,14 +76,34 @@ export async function POST(request: Request) {
       }
 
       const text = message.text;
+      const timestamp = event.timestamp ?? Date.now();
 
-      // Process and reply in background after returning 200 to Meta
+      // Process in background after returning 200 to Meta
       after(async () => {
         try {
-          const replyText = await processInstagramMessage(text);
-          await sendInstagramMessage(senderId, replyText);
+          if (hasN8n) {
+            // Forward to n8n workflow
+            await fetch(n8nUrl, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+                ...(n8nSecret ? { "x-api-key": n8nSecret } : {}),
+              },
+              body: JSON.stringify({
+                senderId,
+                text,
+                timestamp,
+                platform: "instagram",
+              }),
+              signal: AbortSignal.timeout(10000),
+            }).catch((err) => console.error("Failed to forward Instagram DM to n8n:", err));
+          } else {
+            // Fallback: built-in responder
+            const replyText = await processInstagramMessage(text);
+            await sendInstagramMessage(senderId, replyText);
+          }
         } catch (err) {
-          console.error("Failed to process Instagram DM:", err);
+          console.error("Failed to handle Instagram DM:", err);
         }
       });
     }
