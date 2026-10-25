@@ -34,7 +34,7 @@ export async function validateCoupon(
 
     if (error || !coupon) {
       // Hardcoded fallback coupons in case table isn't migrated yet
-      if (code === "WELCOME10" || code === "INSTA10") {
+      if (code === "WELCOME10" || code === "INSTA10" || code === "TRIO10" || code === "SALE10") {
         const discountMinor = Math.round(subtotalMinor * 0.1);
         return {
           valid: true,

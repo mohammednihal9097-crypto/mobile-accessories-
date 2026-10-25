@@ -4,6 +4,7 @@ import { STORE } from "@/lib/config";
 import { getCatalog } from "@/lib/catalog";
 import { CategoryIcon } from "@/lib/category-icons";
 import ProductCard from "@/components/ProductCard";
+import DiscountSaleBanner from "@/components/DiscountSaleBanner";
 
 const FEATURES = [
   { Icon: BadgeCheck, title: "Fit checked", text: "Products list the phone models and devices they work with." },
@@ -77,6 +78,9 @@ export default async function Home() {
           </div>
         ))}
       </section>
+
+      {/* 10% Discount Sale Banner with Random Gadgets */}
+      <DiscountSaleBanner products={products} code="SALE10" />
 
       {/* Categories */}
       <section>

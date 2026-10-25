@@ -7,6 +7,7 @@ import CatalogProvider from "@/components/CatalogProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SampleBanner from "@/components/SampleBanner";
+import AnnouncementBar from "@/components/AnnouncementBar";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -24,6 +25,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <CatalogProvider catalog={catalog}>
+          <AnnouncementBar code="SALE10" />
           <SampleBanner />
           <Header />
           <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">{children}</main>
