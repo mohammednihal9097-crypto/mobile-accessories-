@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SampleBanner from "@/components/SampleBanner";
 import AnnouncementBar from "@/components/AnnouncementBar";
+import FloatingInstagramWidget from "@/components/FloatingInstagramWidget";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -30,6 +31,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <Header />
           <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">{children}</main>
           <Footer />
+          <FloatingInstagramWidget />
         </CatalogProvider>
       </body>
     </html>
