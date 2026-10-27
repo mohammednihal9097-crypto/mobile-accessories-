@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  Instagram,
   CheckCircle2,
   AlertCircle,
   ExternalLink,
@@ -11,6 +10,7 @@ import {
   Workflow,
   Code2,
 } from "lucide-react";
+import InstagramIcon from "@/components/icons/InstagramIcon";
 import Flash from "@/components/admin/Flash";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { isInstagramConfigured } from "@/lib/instagram/api";
@@ -32,7 +32,7 @@ export default async function AdminInstagramPage({ searchParams }: PageProps<"/a
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-slate-900">
-            <Instagram className="h-6 w-6 text-rose-600" />
+            <InstagramIcon className="h-6 w-6 text-rose-600" />
             Instagram Auto-Reply &amp; Hub
           </h1>
           <p className="mt-1 text-sm text-slate-600">

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  Instagram,
   ShoppingBag,
   Truck,
   ShieldCheck,
@@ -11,6 +10,7 @@ import {
   PackageCheck,
   Sparkles,
 } from "lucide-react";
+import InstagramIcon from "@/components/icons/InstagramIcon";
 import CopyCodeButton from "@/components/CopyCodeButton";
 import { formatMoney, STORE } from "@/lib/config";
 import { createPublicClient } from "@/lib/supabase/public";
@@ -66,7 +66,7 @@ export default async function InstagramLandingPage() {
             rel="noopener noreferrer"
             className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline"
           >
-            <Instagram className="h-3.5 w-3.5" />
+            <InstagramIcon className="h-3.5 w-3.5" />
             @triostore_india
             <ExternalLink className="h-3 w-3" />
           </a>

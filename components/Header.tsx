@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Instagram, PackageSearch, ShoppingBag, Store } from "lucide-react";
+import { PackageSearch, ShoppingBag, Store } from "lucide-react";
+import InstagramIcon from "@/components/icons/InstagramIcon";
 import Logo from "./Logo";
 import { useCatalog } from "./CatalogProvider";
 import { useCart } from "@/lib/cart";
@@ -40,7 +41,7 @@ export default function Header() {
             aria-label="Instagram shop"
             className="hidden h-10 items-center gap-1.5 rounded-xl px-2.5 text-slate-700 transition hover:bg-rose-50 hover:text-rose-600 sm:inline-flex"
           >
-            <Instagram className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+            <InstagramIcon className="h-4 w-4" />
             <span>@triostore_india</span>
           </Link>
           <Link

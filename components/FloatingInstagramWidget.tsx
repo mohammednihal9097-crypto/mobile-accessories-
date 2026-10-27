@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Instagram, MessageCircle, X, Sparkles } from "lucide-react";
+import { MessageCircle, X, Sparkles } from "lucide-react";
+import InstagramIcon from "@/components/icons/InstagramIcon";
 import { STORE } from "@/lib/config";
 
 export default function FloatingInstagramWidget() {
@@ -41,7 +42,7 @@ export default function FloatingInstagramWidget() {
             className="group flex items-center gap-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-purple-600/10 p-2.5 transition hover:from-amber-500/20 hover:via-rose-500/20 hover:to-purple-600/20"
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white shadow-sm">
-              <Instagram className="h-5 w-5" />
+              <InstagramIcon className="h-5 w-5" />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold text-slate-900 group-hover:text-rose-600 transition-colors">
@@ -104,7 +105,7 @@ export default function FloatingInstagramWidget() {
           aria-label="Contact us on Instagram"
           className="btn-press relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
         >
-          <Instagram className="h-7 w-7 transition-transform duration-300 group-hover:rotate-6" />
+          <InstagramIcon className="h-7 w-7 transition-transform duration-300 group-hover:rotate-6" />
           {/* Notification badge */}
           <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white">
             <span className="h-2 w-2 rounded-full bg-white animate-ping" />
