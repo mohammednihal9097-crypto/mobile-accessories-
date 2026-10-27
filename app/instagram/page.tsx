@@ -19,6 +19,7 @@ export const metadata = {
   title: "Trio Store on Instagram | Shop Official Accessories",
   description: "Official Instagram hub for Trio Store India. Shop trending phone accessories, phone cases, chargers, and exclusive follower discounts.",
 };
+export const dynamic = "force-dynamic";
 
 export default async function InstagramLandingPage() {
   const supabase = createPublicClient();

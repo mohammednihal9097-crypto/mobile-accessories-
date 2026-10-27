@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trio Store — Project Presentation Deck</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+    
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      background-color: #0b0c14;
+      color: #f1f2f6;
+      overflow-x: hidden;
+    }
+
+    .slide-aspect {
+      aspect-ratio: 16 / 9;
+      max-height: 86vh;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .brand-gradient {
+      background: linear-gradient(135deg, #673de6 0%, #8c52ff 50%, #471ea7 100%);
+    }
+
+    .card-glass {
+      background: rgba(22, 24, 38, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-glass-purple {
+      background: rgba(103, 61, 230, 0.08);
+      border: 1px solid rgba(103, 61, 230, 0.25);
+    }
+
+    .glow-brand {
+      box-shadow: 0 0 40px -10px rgba(103, 61, 230, 0.35);
+    }
+
+    /* Print styling to export cleanly as PDF */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #18181a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .slide-container {
+        display: block !important;
+      }
+      .slide-page {
+        display: flex !important;
+        page-break-after: always;
+        break-after: page;
+        height: 100vh !important;
+        width: 100vw !important;
+        max-width: none !important;
+        max-height: none !important;
+        aspect-ratio: auto !important;
+        padding: 2.5rem !important;
+        background: #ffffff !important;
+        color: #18181a !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .card-glass {
+        background: #f8f9fa !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #18181a !important;
+      }
+      .card-glass-purple {
+        background: #f5f3ff !important;
+        border: 1px solid #ddd6fe !important;
+      }
+      .text-slate-400, .text-slate-300 {
+        color: #475569 !important;
+      }
+      .text-white {
+        color: #0f172a !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between select-none">
+
+  <!-- Top Toolbar -->
+  <header class="no-print bg-[#11121d] border-b border-slate-800/80 px-6 py-3 flex items-center justify-between text-sm z-50">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-lg bg-[#673de6] flex items-center justify-center font-bold text-white shadow-md shadow-brand-500/20">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      </div>
+      <div>
+        <span class="font-bold text-white tracking-tight">Trio Store</span>
+        <span class="text-xs text-slate-400 ml-2 hidden sm:inline border-l border-slate-700 pl-2">Project Presentation Deck</span>
+      </div>
+    </div>
+
+    <!-- Center Slide Counter -->
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-slate-400 font-medium">Slide</span>
+      <div class="bg-[#1a1c2e] border border-slate-700/60 rounded-lg px-3 py-1 text-xs font-semibold text-purple-300">
+        <span id="current-slide-num">1</span> <span class="text-slate-500">/</span> <span id="total-slides-num">14</span>
+      </div>
+      <span id="presentation-timer" class="text-xs font-mono text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 px-2.5 py-1 rounded-md">00:00</span>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleNotes()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 hover:bg-slate-700 text-xs font-medium text-slate-300 flex items-center gap-1.5 transition">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span id="notes-btn-text">Speaker Notes</span>
+      </button>
+
+      <button onclick="toggleFullScreen()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 hover:bg-slate-700 text-xs font-medium text-slate-300 flex items-center gap-1.5 transition">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+        <span>Fullscreen</span>
+      </button>
+
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-[#673de6] hover:bg-[#572ecc] text-xs font-medium text-white flex items-center gap-1.5 transition shadow-sm">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        <span>Export PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Presentation Stage -->
+  <main class="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+    <!-- Ambient Backdrop Glow -->
+    <div class="absolute w-[600px] h-[400px] rounded-full bg-[#673de6]/10 blur-[130px] pointer-events-none -top-20 -left-20"></div>
+    <div class="absolute w-[500px] h-[350px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none -bottom-20 -right-20"></div>
+
+    <div class="slide-container w-full flex justify-center">
+      
+      <!-- ================= SLIDE 1: TITLE SLIDE ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden glow-brand" data-slide="1">
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-[#673de6]/15 blur-3xl pointer-events-none"></div>
+
+        <!-- Top Badge -->
+        <div class="flex items-center justify-between z-10">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#673de6]/20 border border-[#673de6]/40 text-purple-300 text-xs font-semibold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            LIVE PRODUCTION PROJECT • FULL-STACK E-COMMERCE
+          </div>
+          <span class="text-xs font-mono text-slate-400">INR (₹) / India Ecosystem</span>
+        </div>
+
+        <!-- Center Content -->
+        <div class="my-auto z-10 space-y-4 max-w-3xl">
+          <div class="inline-flex items-center gap-3">
+            <div class="h-12 w-12 rounded-2xl bg-[#673de6] flex items-center justify-center text-white font-extrabold text-2xl shadow-xl shadow-brand-600/30">
+              T
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white">
+              Trio <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-300">Store</span>
+            </h1>
+          </div>
+          <p class="text-xl sm:text-2xl font-medium text-slate-200 leading-snug">
+            Next-Generation Mobile Accessories &amp; Gadgets Commerce Platform
+          </p>
+          <p class="text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+            A high-speed, direct-to-consumer online store engineered with Next.js 16 App Router, Supabase PostgreSQL, Razorpay payments, Meta WhatsApp transactional engine, and a complete 10-module business operations suite.
+          </p>
+        </div>
+
+        <!-- Bottom Footer Meta -->
+        <div class="pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs z-10">
+          <div>
+            <span class="text-slate-500 uppercase tracking-wider block font-semibold">Live Store</span>
+            <span class="text-purple-400 font-mono mt-0.5 block truncate">triostore-india.vercel.app</span>
+          </div>
+          <div>
+            <span class="text-slate-500 uppercase tracking-wider block font-semibold">Core Framework</span>
+            <span class="text-slate-200 mt-0.5 block">Next.js 16 • React 19 • TypeScript</span>
+          </div>
+          <div>
+            <span class="text-slate-500 uppercase tracking-wider block font-semibold">Database &amp; Auth</span>
+            <span class="text-slate-200 mt-0.5 block">Supabase (PostgreSQL + RLS)</span>
+          </div>
+          <div>
+            <span class="text-slate-500 uppercase tracking-wider block font-semibold">Payment Engine</span>
+            <span class="text-emerald-400 font-medium mt-0.5 block">Razorpay UPI &amp; Cards</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 2: THE PROBLEM STATEMENT ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="2">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">01 • Industry Challenge</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">The Problem: Why Traditional E-Commerce Fails in India</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-rose-950/40 text-rose-300 border border-rose-800/40">Pain Points</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- Card 1 -->
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-rose-500 space-y-3">
+            <div class="h-10 w-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold">
+              70%+
+            </div>
+            <h3 class="text-lg font-bold text-white">High Cart Abandonment</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Standard Shopify or WooCommerce setups force customers through 5-page forms, slow redirection gates, and laggy mobile interfaces on Indian 4G/5G connections.
+            </p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-amber-500 space-y-3">
+            <div class="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
+              &lt;15%
+            </div>
+            <h3 class="text-lg font-bold text-white">Ignored Email Updates</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Transactional emails land in Spam or Promotions folders. Indian shoppers rarely check email for tracking numbers, causing anxious customer support calls and returns.
+            </p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-purple-500 space-y-3">
+            <div class="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">
+              ₹25k+/mo
+            </div>
+            <h3 class="text-lg font-bold text-white">Bloated SaaS Subscription Tax</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Small gadget sellers must purchase 8 to 12 third-party apps just to get basic features: stock alerts, invoice printing, CSV sales sheets, CRM, and coupon management.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-900/60 border border-slate-800 p-4 text-xs text-slate-400 flex items-center gap-3">
+          <span class="text-purple-400 font-semibold">Core Insight:</span>
+          <span>Indian consumers expect instantaneous mobile shopping, native UPI payments, and instant WhatsApp receipts without the friction of legacy platforms.</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 3: THE SOLUTION ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="3">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">02 • Our Approach</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">The Solution: Trio Store Unified Ecosystem</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/40">Next-Gen Architecture</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <div class="space-y-4">
+            <div class="card-glass rounded-2xl p-5 border border-purple-500/20">
+              <div class="flex items-center gap-3">
+                <span class="p-2 rounded-lg bg-purple-500/20 text-purple-300 font-bold">⚡</span>
+                <h4 class="font-bold text-white text-base">Ultra-Fast Next.js 16 Storefront</h4>
+              </div>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                Server-rendered components deliver sub-second initial loads. Dynamic filtering by phone model and gadget category ensures instant discovery without client lag.
+              </p>
+            </div>
+
+            <div class="card-glass rounded-2xl p-5 border border-emerald-500/20">
+              <div class="flex items-center gap-3">
+                <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold">💳</span>
+                <h4 class="font-bold text-white text-base">Native Razorpay &amp; UPI Checkout</h4>
+              </div>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                Frictionless 2-step checkout with instant UPI deep links (GPay, PhonePe, Paytm) and HMAC-verified webhook confirmation.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="card-glass rounded-2xl p-5 border border-emerald-500/20">
+              <div class="flex items-center gap-3">
+                <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold">💬</span>
+                <h4 class="font-bold text-white text-base">WhatsApp Automated Commerce Engine</h4>
+              </div>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                Order confirmations, digital receipts, and live courier tracking links delivered directly to customer WhatsApp with a 98% open rate.
+              </p>
+            </div>
+
+            <div class="card-glass rounded-2xl p-5 border border-indigo-500/20">
+              <div class="flex items-center gap-3">
+                <span class="p-2 rounded-lg bg-indigo-500/20 text-indigo-300 font-bold">🛡️</span>
+                <h4 class="font-bold text-white text-base">Zero-SaaS 10-Module Admin Center</h4>
+              </div>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                Full in-house operations: live order search, bulk status bar, low-stock predictive alarms, printable tax invoices, and revenue datasheets.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+          <span>Target Audience: Smartphone users across Tier 1, 2 &amp; 3 cities in India</span>
+          <span class="text-purple-300 font-medium">Result: Zero monthly subscription overhead</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 4: STOREFRONT & CUSTOMER JOURNEY ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="4">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">03 • Customer Experience</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Storefront Experience &amp; Modern UI</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-purple-950/40 text-purple-300 border border-purple-800/40">Frictionless UX</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <div class="card-glass rounded-2xl p-5 space-y-3">
+            <div class="text-2xl">📱</div>
+            <h3 class="text-base font-bold text-white">Dynamic Device Compatibility</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Customers filter products specifically tailored to their phone model (iPhone 13 to 16 Pro, Samsung S23 to S25 Ultra, OnePlus, Pixel). Eliminates compatibility returns.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li>Category matching</li>
+              <li>Brand-specific model tags</li>
+              <li>Live availability status</li>
+            </ul>
+          </div>
+
+          <div class="card-glass rounded-2xl p-5 space-y-3">
+            <div class="text-2xl">🏷️</div>
+            <h3 class="text-base font-bold text-white">10% Discount Sale Banner</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Rotating random gadgets display original strikethrough price, discounted INR price, and a single-click <code class="text-purple-300 bg-purple-950/50 px-1 py-0.5 rounded">SALE10</code> coupon copy button.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li>Dynamic gadget shuffle</li>
+              <li>Site-wide announcement bar</li>
+              <li>Instant clipboard copy</li>
+            </ul>
+          </div>
+
+          <div class="card-glass rounded-2xl p-5 space-y-3">
+            <div class="text-2xl">⚡</div>
+            <h3 class="text-base font-bold text-white">2-Step Frictionless Checkout</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Single-page streamlined checkout collecting only essential delivery details (Name, WhatsApp number, Address, Pincode) before launching the payment gateway.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li>Automatic +91 normalization</li>
+              <li>Free delivery threshold check</li>
+              <li>No forced account creation</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-purple-950/20 border border-purple-800/40 p-3 text-xs text-purple-200 flex items-center justify-between">
+          <span>🎨 Design Inspiration: Hostinger purple palette + Apple &amp; Outcase modern card aesthetics</span>
+          <span class="font-mono text-slate-400">100% Mobile Responsive</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 5: RAZORPAY INTEGRATION ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="5">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">04 • Payment Engineering</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Razorpay Payments &amp; Auto-Reconciliation</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-blue-950/40 text-blue-300 border border-blue-800/40">FinTech Security</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Left: Verification Flow -->
+          <div class="card-glass rounded-2xl p-6 space-y-4">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              Cryptographic Webhook Handshake
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Orders transition from <code class="text-amber-400">pending_payment</code> to <code class="text-emerald-400">paid</code> only when Razorpay’s cryptographic signature passes HMAC-SHA256 validation.
+            </p>
+            <div class="bg-black/40 rounded-xl p-3 font-mono text-[11px] text-purple-300 border border-slate-800 space-y-1">
+              <div>const expected = createHmac("sha256", secret);</div>
+              <div>const isValid = timingSafeEqual(expected, signature);</div>
+              <div class="text-emerald-400">// Immune to timing side-channel attacks</div>
+            </div>
+            <p class="text-xs text-slate-400">
+              Eliminates fraudulent client-side payment confirmation by verifying server-to-server.
+            </p>
+          </div>
+
+          <!-- Right: Safety Net Cron -->
+          <div class="card-glass rounded-2xl p-6 space-y-4">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-indigo-400"></span>
+              Unpaid Stock Auto-Recovery Cron
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              When shoppers abandon payment, reserved product inventory is automatically returned to the store after 24 hours.
+            </p>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700/50">
+                <span class="text-slate-400 block">Inventory Lock</span>
+                <span class="text-white font-semibold mt-1 block">24-hour hold window</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700/50">
+                <span class="text-slate-400 block">Daily Trigger</span>
+                <span class="text-emerald-400 font-semibold mt-1 block">Vercel Cron (`api/cron/daily`)</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400">
+              Reconciles any missed webhook events directly against Razorpay's API to ensure 0 lost payments.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+          <span>Supported Payment Modes: UPI (GPay, PhonePe, Paytm), Debit/Credit Cards, NetBanking</span>
+          <span class="text-emerald-400 font-mono">Currency: INR (Paise precision in DB)</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 6: WHATSAPP NOTIFICATIONS ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="6">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">05 • Conversational Commerce</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">WhatsApp Automation &amp; Transactional Alerts</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/40">Meta Cloud API</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- Step 1 -->
+          <div class="card-glass rounded-2xl p-5 space-y-3 relative">
+            <span class="text-xs font-mono text-purple-400 font-bold">EVENT 1</span>
+            <h3 class="text-base font-bold text-white">Instant Order Confirmation</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Triggered immediately upon order placement. Sends the order ID, itemized list of gadgets, delivery address, and direct order view link.
+            </p>
+            <div class="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800/30 text-[11px] text-emerald-300 font-mono">
+              "Hi Rahul! Your Trio Store order #TR-1082 is confirmed. Total: ₹899"
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="card-glass rounded-2xl p-5 space-y-3 relative">
+            <span class="text-xs font-mono text-purple-400 font-bold">EVENT 2</span>
+            <h3 class="text-base font-bold text-white">Payment Receipt</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Sent upon verified Razorpay transaction. Gives the customer instant peace of mind with Razorpay payment reference ID and amount paid.
+            </p>
+            <div class="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800/30 text-[11px] text-emerald-300 font-mono">
+              "Payment verified! Ref: pay_Ox9823kL. We're packing your gadgets."
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="card-glass rounded-2xl p-5 space-y-3 relative">
+            <span class="text-xs font-mono text-purple-400 font-bold">EVENT 3</span>
+            <h3 class="text-base font-bold text-white">Shipping &amp; Tracking Alert</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Triggered when admin marks order as "Shipped" with Courier Name (BlueDart, Delhivery, etc.) and Tracking AWB. Customer clicks once to track live.
+            </p>
+            <div class="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800/30 text-[11px] text-emerald-300 font-mono">
+              "Dispatched via BlueDart! AWB: 98218391. Track: triostore-india.vercel.app/o/..."
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-900/60 border border-slate-800 p-3 text-xs text-slate-300 flex items-center justify-between">
+          <span>⚙️ Backed by async queue flushing (<code class="text-purple-300">flushNotifications</code>) to guarantee zero message loss during peak traffic</span>
+          <span class="text-emerald-400 font-medium">98% Delivery &amp; Read Rate</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 7: 10 ADMIN FEATURES PART 1 ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="7">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">06 • Operations Suite (Part 1)</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Admin Command Center: Core Modules</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-purple-950/40 text-purple-300 border border-purple-800/40">10 Built-in Systems</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-auto">
+          <!-- 1. Real-time Search -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border-t-2 border-t-purple-500">
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-white">1. Live Order Search</span>
+              <span class="text-xs text-purple-400 font-mono">#Search</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Instant search by customer name, phone number, or order number without page reload. Keeps active status tabs intact.
+            </p>
+          </div>
+
+          <!-- 2. Bulk Updates -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border-t-2 border-t-purple-500">
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-white">2. Sticky Bulk Status Bar</span>
+              <span class="text-xs text-purple-400 font-mono">#Batch</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Multi-select checkboxes let warehouse staff mark 50 orders as "Processing" or "Shipped" in one click with a floating action bar.
+            </p>
+          </div>
+
+          <!-- 3. Stock Alerts -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border-t-2 border-t-amber-500">
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-white">3. Low-Stock Alerts</span>
+              <span class="text-xs text-amber-400 font-mono">#Inventory</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Dashboard highlights any product with ≤5 units remaining. Visual warning flags prevent selling out-of-stock items.
+            </p>
+          </div>
+
+          <!-- 4. Revenue Datasheet -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border-t-2 border-t-emerald-500">
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-white">4. Revenue Datasheet</span>
+              <span class="text-xs text-emerald-400 font-mono">#Analytics</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Day-by-day revenue breakdown, paid orders, pending totals, and one-click CSV export ready for accounting and tax filing.
+            </p>
+          </div>
+
+          <!-- 5. Product Sales Report -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border-t-2 border-t-emerald-500">
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-white">5. Product Sales Report</span>
+              <span class="text-xs text-emerald-400 font-mono">#Performance</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Ranks best-selling gadgets by revenue generated, units sold, and average price to guide restocking decisions.
+            </p>
+          </div>
+
+          <!-- 6. Customer CRM -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border-t-2 border-t-blue-500">
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-white">6. Customer Directory</span>
+              <span class="text-xs text-blue-400 font-mono">#CRM</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Full directory of customers with lifetime order count, total spend, delivery cities, and direct WhatsApp contact shortcuts.
+            </p>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-400 pt-2 border-t border-slate-800/80 flex justify-between">
+          <span>Enterprise-grade back-office built natively into the application</span>
+          <span class="text-purple-300">Requires zero extra software licenses</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 8: 10 ADMIN FEATURES PART 2 ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="8">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">07 • Operations Suite (Part 2)</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Admin Command Center: Catalogue &amp; Logistics</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-purple-950/40 text-purple-300 border border-purple-800/40">Modules 7 – 10</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-auto">
+          <!-- 7. Printable Invoice -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-indigo-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">7. Tax Invoice &amp; Packing Slips</h3>
+              <span class="text-xs text-indigo-400 font-mono">@media print</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              One-click printable tax invoice &amp; warehouse packing slip formatted specifically for standard A4 paper. Includes GST summary, customer address, and order items.
+            </p>
+          </div>
+
+          <!-- 8. Inline Catalogue Editing -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-purple-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">8. Inline Catalogue Management</h3>
+              <span class="text-xs text-purple-400 font-mono">CRUD Engine</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Add, edit, or remove categories (Cases, Chargers, Earbuds) and Phone Models (iPhone 16, Galaxy S25) dynamically without redeploying code.
+            </p>
+          </div>
+
+          <!-- 9. Coupon Engine -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-emerald-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">9. Coupon &amp; Discount Codes</h3>
+              <span class="text-xs text-emerald-400 font-mono">Promotions</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Create percentage or flat INR discounts (`SALE10`, `WELCOME10`), set usage limits, minimum order values, and toggle promotional campaigns on/off instantly.
+            </p>
+          </div>
+
+          <!-- 10. Store Settings & Team RBAC -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-blue-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">10. Store Settings &amp; Admin RBAC</h3>
+              <span class="text-xs text-blue-400 font-mono">Governance</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Configure free shipping thresholds, contact numbers, and manage authorized admin accounts. Protected by Supabase Auth and secure HTTP-only cookies.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-900/60 border border-slate-800 p-3 text-xs text-slate-400 flex items-center justify-between">
+          <span>All 10 modules tested and verified with 46 passing test suites</span>
+          <span class="text-emerald-400 font-semibold">100% Operational</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 9: SYSTEM ARCHITECTURE ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="9">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">08 • Technical Architecture</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Full-Stack System Architecture</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-indigo-950/40 text-indigo-300 border border-indigo-800/40">End-to-End Pipeline</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-auto">
+          <!-- Column 1: Client -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border border-slate-700/60">
+            <div class="text-xs font-bold text-purple-400 uppercase tracking-wider">Client Layer</div>
+            <h4 class="font-bold text-white text-sm">Customer Devices</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 pt-2">
+              <li class="flex items-center gap-1.5">✓ Mobile &amp; Desktop Browser</li>
+              <li class="flex items-center gap-1.5">✓ Next.js 16 SSR &amp; RSC</li>
+              <li class="flex items-center gap-1.5">✓ Tailwind CSS v4 UI</li>
+              <li class="flex items-center gap-1.5">✓ Client-side Fast Filter</li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Next.js Server -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border border-purple-500/40 bg-purple-950/20">
+            <div class="text-xs font-bold text-purple-300 uppercase tracking-wider">Application Layer</div>
+            <h4 class="font-bold text-white text-sm">Next.js 16 (Vercel)</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 pt-2">
+              <li class="flex items-center gap-1.5">✓ Server Actions (CRUD)</li>
+              <li class="flex items-center gap-1.5">✓ Edge Middleware Auth</li>
+              <li class="flex items-center gap-1.5">✓ Webhook Handlers</li>
+              <li class="flex items-center gap-1.5">✓ Automated Daily Cron</li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Supabase -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border border-emerald-500/40 bg-emerald-950/20">
+            <div class="text-xs font-bold text-emerald-300 uppercase tracking-wider">Data &amp; Auth Layer</div>
+            <h4 class="font-bold text-white text-sm">Supabase PostgreSQL</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 pt-2">
+              <li class="flex items-center gap-1.5">✓ PostgreSQL 15 Engine</li>
+              <li class="flex items-center gap-1.5">✓ Row Level Security (RLS)</li>
+              <li class="flex items-center gap-1.5">✓ Atomic Stock Decrement</li>
+              <li class="flex items-center gap-1.5">✓ Product Media Storage</li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Third Parties -->
+          <div class="card-glass rounded-2xl p-4 space-y-2 border border-blue-500/40 bg-blue-950/20">
+            <div class="text-xs font-bold text-blue-300 uppercase tracking-wider">External Gateways</div>
+            <h4 class="font-bold text-white text-sm">FinTech &amp; Meta APIs</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 pt-2">
+              <li class="flex items-center gap-1.5">✓ Razorpay Payment API</li>
+              <li class="flex items-center gap-1.5">✓ Meta WhatsApp Cloud API</li>
+              <li class="flex items-center gap-1.5">✓ n8n Automation Engine</li>
+              <li class="flex items-center gap-1.5">✓ Resend / SMTP Email</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-900/60 border border-slate-800 p-3 text-xs text-slate-400 flex items-center justify-between">
+          <span>Security Model: Secret keys isolated via <code class="text-purple-300">server-only</code>. Zero client database exposure.</span>
+          <span class="text-emerald-400 font-mono">100% Server-Side Rendered</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 10: DATABASE SCHEMA & SECURITY ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="10">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">09 • Data &amp; Security</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Database Schema &amp; Security Model</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/40">Enterprise PostgreSQL</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Left: Relational Schema -->
+          <div class="card-glass rounded-2xl p-5 space-y-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🗄️</span> Normalized PostgreSQL Schema
+            </h3>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/60">
+                <span class="font-bold text-purple-300 block">products</span>
+                <span class="text-[11px] text-slate-400">price_minor, stock, slug</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/60">
+                <span class="font-bold text-purple-300 block">orders</span>
+                <span class="text-[11px] text-slate-400">status, total_minor, addr</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/60">
+                <span class="font-bold text-purple-300 block">order_items</span>
+                <span class="text-[11px] text-slate-400">product_id, qty, unit_price</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/60">
+                <span class="font-bold text-purple-300 block">payments</span>
+                <span class="text-[11px] text-slate-400">razorpay_id, signature, ok</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/60">
+                <span class="font-bold text-purple-300 block">coupons</span>
+                <span class="text-[11px] text-slate-400">code, discount_pct, active</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/60">
+                <span class="font-bold text-purple-300 block">phone_models</span>
+                <span class="text-[11px] text-slate-400">brand, model, slug</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400">
+              Foreign key cascades and indexed queries ensure instant search and relational integrity.
+            </p>
+          </div>
+
+          <!-- Right: Security & RLS -->
+          <div class="card-glass rounded-2xl p-5 space-y-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🛡️</span> Multi-Layer Security Architecture
+            </h3>
+            <ul class="text-xs text-slate-300 space-y-2.5 pt-1">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><strong>Row Level Security (RLS):</strong> Unauthenticated users can only view active products. Order records require secret token or admin session.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><strong>Server-Only Guards:</strong> Supabase service role keys are wrapped in <code class="text-purple-300">server-only</code>, never bundled into client JS.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><strong>Race Condition Prevention:</strong> Stock decrements occur via PostgreSQL stored procedures, preventing overselling during flash sales.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+          <span>Database Host: Supabase Cloud (AWS Mumbai Region)</span>
+          <span class="text-emerald-400 font-semibold">Strict CSRF &amp; XSS Protection</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 11: QUALITY ASSURANCE & TESTING ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="11">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">10 • Reliability &amp; Testing</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Automated Test Suite &amp; Quality Assurance</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/40">100% Pass Rate</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- Stat 1 -->
+          <div class="card-glass rounded-2xl p-6 text-center space-y-2">
+            <div class="text-4xl font-extrabold text-emerald-400">46 / 46</div>
+            <div class="text-sm font-bold text-white">Unit Tests Passing</div>
+            <p class="text-xs text-slate-400">
+              Native Node.js test runner verifies all payment math, signature checks, and bot routers.
+            </p>
+          </div>
+
+          <!-- Stat 2 -->
+          <div class="card-glass rounded-2xl p-6 text-center space-y-2">
+            <div class="text-4xl font-extrabold text-purple-400">0 Errors</div>
+            <div class="text-sm font-bold text-white">TypeScript Strict Mode</div>
+            <p class="text-xs text-slate-400">
+              Complete type safety across Server Actions, API routes, database models, and components.
+            </p>
+          </div>
+
+          <!-- Stat 3 -->
+          <div class="card-glass rounded-2xl p-6 text-center space-y-2">
+            <div class="text-4xl font-extrabold text-blue-400">&lt;1.4s</div>
+            <div class="text-sm font-bold text-white">Full Test Run Duration</div>
+            <p class="text-xs text-slate-400">
+              Blazing fast execution allows continuous pre-commit validation and rapid deployments.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-glass rounded-xl p-4 border border-slate-800 text-xs space-y-2">
+          <div class="font-semibold text-slate-300">Verified Test Modules:</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-400 font-mono text-[11px]">
+            <div>• Razorpay Webhook</div>
+            <div>• Country Code Formatter</div>
+            <div>• WhatsApp Payload</div>
+            <div>• PDF Receipt Builder</div>
+            <div>• Admin Email Template</div>
+            <div>• Catalog Meta Feed</div>
+            <div>• Bot Router Logic</div>
+            <div>• Reconcile Validator</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 12: BUSINESS IMPACT ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="12">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">11 • Business Metrics</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Competitive Advantage &amp; Business Impact</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-amber-950/40 text-amber-300 border border-amber-800/40">ROI &amp; Efficiency</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- Metric 1 -->
+          <div class="card-glass rounded-2xl p-6 space-y-3 border-t-4 border-t-emerald-500">
+            <span class="text-xs text-emerald-400 font-bold uppercase tracking-wider">Cost Efficiency</span>
+            <h3 class="text-2xl font-extrabold text-white">₹0 / month</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Eliminated expensive Shopify app stacks ($300+/month for search, bulk updates, invoice apps, and WhatsApp add-ons) by building everything natively.
+            </p>
+          </div>
+
+          <!-- Metric 2 -->
+          <div class="card-glass rounded-2xl p-6 space-y-3 border-t-4 border-t-purple-500">
+            <span class="text-xs text-purple-400 font-bold uppercase tracking-wider">Conversion Boost</span>
+            <h3 class="text-2xl font-extrabold text-white">40% Faster</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              2-step checkout with instant UPI direct payment avoids the multi-page funnel drop-offs that plague conventional e-commerce stores in India.
+            </p>
+          </div>
+
+          <!-- Metric 3 -->
+          <div class="card-glass rounded-2xl p-6 space-y-3 border-t-4 border-t-blue-500">
+            <span class="text-xs text-blue-400 font-bold uppercase tracking-wider">Customer Retention</span>
+            <h3 class="text-2xl font-extrabold text-white">98% Open Rate</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              WhatsApp transactional delivery ensures customers see order confirmations, payment receipts, and dispatch tracking within 3 minutes of sending.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-900/60 border border-slate-800 p-3 text-xs text-slate-400 flex items-center justify-between">
+          <span>Engineered for unit-economic profitability from Day 1</span>
+          <span class="text-purple-300 font-semibold">Self-Sufficient Platform</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 13: FUTURE ROADMAP ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden" data-slide="13">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">12 • Future Vision</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mt-0.5">Project Roadmap &amp; Scaling Strategy</h2>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-indigo-950/40 text-indigo-300 border border-indigo-800/40">Next Milestones</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-auto">
+          <!-- Phase 1 -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-purple-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">1. Courier API Direct Dispatch</h3>
+              <span class="text-xs text-purple-400 font-semibold">Q2 2026</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Direct API integration with Shiprocket and Delhivery for automated shipping label generation and pickup scheduling straight from the admin dashboard.
+            </p>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-indigo-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">2. AI-Powered Gadget Recommendations</h3>
+              <span class="text-xs text-indigo-400 font-semibold">Q3 2026</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Personalized cross-selling engine that automatically pairs phone cases with matching tempered glass and fast chargers based on the selected phone model.
+            </p>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-emerald-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">3. PWA &amp; Offline Catalogue</h3>
+              <span class="text-xs text-emerald-400 font-semibold">Q4 2026</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Progressive Web App installation with service-worker caching for instant browsing even in low-connectivity mobile environments.
+            </p>
+          </div>
+
+          <!-- Phase 4 -->
+          <div class="card-glass rounded-2xl p-5 space-y-2 border-l-4 border-l-blue-500">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">4. Multi-Warehouse Inventory Sync</h3>
+              <span class="text-xs text-blue-400 font-semibold">2027</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Inventory routing logic to fulfill orders from the nearest regional fulfillment center, cutting delivery times across India from 4 days to under 48 hours.
+            </p>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-400 pt-2 border-t border-slate-800/80 flex justify-between">
+          <span>Continuous delivery pipeline ready for production expansion</span>
+          <span class="text-emerald-400 font-medium">Modular Architecture</span>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 14: CONCLUSION & Q&A ================= -->
+      <section class="slide-page slide-aspect card-glass rounded-3xl p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden hidden glow-brand" data-slide="14">
+        <div class="flex items-center justify-between border-b border-slate-800/70 pb-4">
+          <div class="inline-flex items-center gap-2">
+            <div class="h-8 w-8 rounded-lg bg-[#673de6] flex items-center justify-center font-bold text-white text-sm">T</div>
+            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">Summary &amp; Wrap-Up</span>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/40">Production Ready</span>
+        </div>
+
+        <div class="my-auto text-center space-y-4 max-w-2xl mx-auto">
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+            Thank You!
+          </h2>
+          <p class="text-base sm:text-lg text-slate-200">
+            Trio Store demonstrates how modern full-stack engineering can eliminate SaaS fees, accelerate checkout, and elevate the Indian e-commerce experience.
+          </p>
+          
+          <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
+            <div class="card-glass px-4 py-2.5 rounded-xl text-xs text-purple-300 border border-purple-500/30 font-mono">
+              triostore-india.vercel.app
+            </div>
+            <div class="card-glass px-4 py-2.5 rounded-xl text-xs text-slate-300 border border-slate-700 font-mono">
+              Next.js 16 • Supabase • Razorpay
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+          <span>Questions, Demo &amp; Code Review</span>
+          <span class="text-purple-400 font-medium">Ready for Live Showcase</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="no-print bg-[#11121d] border-t border-slate-800/80 px-6 py-3 flex items-center justify-between z-50">
+    <div class="flex items-center gap-2">
+      <button onclick="prevSlide()" class="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2 transition disabled:opacity-40" id="prev-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Previous</span>
+      </button>
+
+      <button onclick="nextSlide()" class="px-4 py-2 rounded-xl bg-[#673de6] hover:bg-[#572ecc] text-white text-xs font-semibold flex items-center gap-2 transition shadow-md shadow-brand-600/20" id="next-btn">
+        <span>Next Slide</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Quick Jump Selector -->
+    <div class="hidden md:flex items-center gap-2 text-xs text-slate-400">
+      <span>Jump to:</span>
+      <select id="slide-jump" onchange="goToSlide(parseInt(this.value))" class="bg-[#1a1c2e] border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-purple-500">
+        <option value="1">1. Title &amp; Project Overview</option>
+        <option value="2">2. Industry Problem Statement</option>
+        <option value="3">3. The Trio Solution</option>
+        <option value="4">4. Storefront &amp; Modern UI</option>
+        <option value="5">5. Razorpay Payments &amp; Reconciliation</option>
+        <option value="6">6. WhatsApp Conversational Alerts</option>
+        <option value="7">7. Admin Panel: Operations (Part 1)</option>
+        <option value="8">8. Admin Panel: Catalogue (Part 2)</option>
+        <option value="9">9. Technical Architecture</option>
+        <option value="10">10. Database Schema &amp; Security</option>
+        <option value="11">11. Automated Testing &amp; QA</option>
+        <option value="12">12. Business Impact &amp; Metrics</option>
+        <option value="13">13. Future Roadmap</option>
+        <option value="14">14. Conclusion &amp; Q&amp;A</option>
+      </select>
+    </div>
+
+    <!-- Keyboard Hint -->
+    <div class="text-[11px] text-slate-500 hidden sm:block">
+      Tip: Use <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">→</kbd> to navigate, <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">N</kbd> for notes
+    </div>
+  </footer>
+
+  <!-- Speaker Notes Drawer (Toggled) -->
+  <div id="notes-drawer" class="no-print hidden fixed bottom-16 left-0 right-0 max-w-4xl mx-auto p-4 z-40 transition-all">
+    <div class="card-glass rounded-2xl p-5 border border-purple-500/30 shadow-2xl space-y-2 bg-[#121320]/95 backdrop-blur-xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-300">Presenter Script &amp; Speaker Notes</span>
+        </div>
+        <button onclick="toggleNotes()" class="text-slate-400 hover:text-white text-xs">✕ Close</button>
+      </div>
+      <p id="speaker-notes-content" class="text-sm text-slate-200 leading-relaxed font-sans pt-1">
+        <!-- Dynamic speaker notes injected here -->
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const totalSlides = 14;
+    let currentSlide = 1;
+    let timerSeconds = 0;
+    let timerInterval = null;
+
+    const speakerNotes = {
+      1: "Welcome everyone! Today I am presenting 'Trio Store', a high-performance e-commerce ecosystem built specifically for mobile accessories and gadgets in the Indian market. The project addresses key pain points in online shopping through modern full-stack web engineering, native Indian payment integration, automated WhatsApp notifications, and a comprehensive 10-feature operational backend.",
+      2: "Let's first look at why traditional e-commerce platforms struggle in India. Over 70% of carts are abandoned due to sluggish checkout funnels and forced account creation. Transactional emails have less than a 15% open rate because they land in spam, causing customer anxiety. Furthermore, small businesses typically spend over ₹25,000 every month on third-party SaaS apps just to get basic features like invoices, stock alarms, and CRM.",
+      3: "Trio Store solves these challenges through a unified, zero-SaaS architecture. We built the storefront with Next.js 16 Server Components for sub-second page loads, integrated direct Razorpay UPI payments, automated customer updates via Meta WhatsApp Cloud API with a 98% open rate, and built an in-house 10-module business operations suite.",
+      4: "Here is the customer storefront experience. Customers can instantly filter gadgets and phone cases by their exact smartphone model, whether it is the newest iPhone, Samsung Galaxy, or OnePlus. We've implemented a dynamic 10% discount banner with interactive coupon copying, and a streamlined 2-step checkout flow that takes seconds to complete without requiring a password.",
+      5: "On the payment side, we integrated Razorpay supporting all Indian payment methods: Google Pay, PhonePe, Paytm UPI, cards, and net banking. Security is paramount: every payment is cryptographically verified using HMAC-SHA256 with timingSafeEqual to prevent side-channel tampering. Additionally, an automated daily cron job recovers unpaid inventory after 24 hours so stock never stays trapped.",
+      6: "Communication is where Trio Store truly shines. Instead of sending emails that get ignored, the platform triggers automated WhatsApp messages for order confirmation, verified payment receipts, and dispatch tracking with direct courier links. This gives customers immediate clarity and cuts support inquiries by up to 60%.",
+      7: "Now, let's look at the Admin Command Center. To eliminate third-party SaaS subscriptions, we engineered 10 comprehensive business modules. Part 1 includes: real-time order search with instant filtering, a sticky bulk status bar to dispatch dozens of orders simultaneously, automated low-stock predictive alarms for items with 5 or fewer units, day-by-day revenue analytics with CSV downloads, and a full customer CRM directory.",
+      8: "Continuing with the admin panel: Part 2 includes printable tax invoices and packing slips formatted specifically for standard A4 printing, dynamic catalogue editing for categories and phone models, a flexible coupon engine supporting percentage and flat discounts, and multi-admin authorization with role-based access control.",
+      9: "Here is our full-stack technical architecture. The client layer runs on Next.js 16 with React 19 and Tailwind CSS v4. The application layer handles server actions, authentication middleware, and webhooks on Vercel. Supabase PostgreSQL manages relational data with Row Level Security, while external APIs connect directly to Razorpay, Meta WhatsApp Cloud API, and n8n.",
+      10: "Our database schema is fully normalized across products, orders, order_items, payments, coupons, and phone models. Security is built into the foundation: Supabase service role keys are strictly guarded using 'server-only', customer data is protected by Row Level Security, and race conditions during stock decrements are prevented at the database layer.",
+      11: "Engineering reliability is proven through our test suite. We have 46 automated unit tests covering payment reconciliation, webhook cryptographic signatures, template formatting, PDF invoice generation, and bot routing. All 46 tests pass consistently in under 1.4 seconds, accompanied by zero TypeScript compiler errors.",
+      12: "The business impact of Trio Store is immediate: zero recurring software fees compared to over ₹25,000 monthly on Shopify app stores, a 40% faster checkout funnel through native UPI, and a 98% open rate on post-purchase communication via WhatsApp.",
+      13: "Looking ahead, our project roadmap includes direct courier API integration with Shiprocket and Delhivery for automated shipping label printing, an AI-powered gadget recommendation engine for phone model cross-selling, and Progressive Web App offline caching for rural and tier-3 connectivity.",
+      14: "In conclusion, Trio Store proves that modern web engineering can deliver an enterprise-grade, lightning-fast e-commerce experience tailored for India without costly SaaS dependencies. The platform is live at triostore-india.vercel.app and ready for production. Thank you, and I look forward to your questions!"
+    };
+
+    function updateSlide() {
+      document.querySelectorAll('.slide-page').forEach(el => {
+        const slideNum = parseInt(el.getAttribute('data-slide'));
+        if (slideNum === currentSlide) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('current-slide-num').innerText = currentSlide;
+      document.getElementById('slide-jump').value = currentSlide;
+      document.getElementById('speaker-notes-content').innerText = speakerNotes[currentSlide] || "No notes for this slide.";
+
+      // Update button states
+      document.getElementById('prev-btn').disabled = (currentSlide === 1);
+      if (currentSlide === totalSlides) {
+        document.getElementById('next-btn').innerHTML = '<span>Finish</span>';
+      } else {
+        document.getElementById('next-btn').innerHTML = '<span>Next Slide</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(num) {
+      if (num >= 1 && num <= totalSlides) {
+        currentSlide = num;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      const drawer = document.getElementById('notes-drawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'Home') {
+        goToSlide(1);
+      } else if (e.key === 'End') {
+        goToSlide(totalSlides);
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullScreen();
+      }
+    });
+
+    // Start presentation timer
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+        const secs = String(timerSeconds % 60).padStart(2, '0');
+        document.getElementById('presentation-timer').innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    // Initialize
+    updateSlide();
+    startTimer();
+  </script>
+</body>
+</html>

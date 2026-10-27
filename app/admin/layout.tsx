@@ -19,6 +19,7 @@ import { requireAdmin } from "@/lib/supabase/auth";
 import { logout } from "../login/actions";
 
 export const metadata = { title: "Admin", robots: { index: false, follow: false } };
+export const dynamic = "force-dynamic";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
