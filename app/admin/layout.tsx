@@ -19,7 +19,7 @@ import { requireAdmin } from "@/lib/supabase/auth";
 import { logout } from "../login/actions";
 
 export const metadata = { title: "Admin", robots: { index: false, follow: false } };
-export const dynamic = "force-dynamic";
+export const instant = false;
 
 const NAV = [
   { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
@@ -36,7 +36,7 @@ const NAV = [
   { href: "/admin/admins", label: "Admin team", Icon: ShieldCheck },
 ];
 
-export default function AdminLayout({ children }: LayoutProps<"/admin">) {
+export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
     <Suspense fallback={<p className="text-slate-500">Checking access…</p>}>
       <AdminShell>{children}</AdminShell>

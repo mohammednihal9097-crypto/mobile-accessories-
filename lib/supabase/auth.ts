@@ -1,5 +1,6 @@
 import "server-only";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { createClient } from "./server";
 
 /**
@@ -8,6 +9,7 @@ import { createClient } from "./server";
  * 2) The user must have a row in admin_users (row rules let users see only their own row).
  */
 export async function requireAdmin() {
+  await connection();
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
